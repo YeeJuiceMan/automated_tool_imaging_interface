@@ -6,6 +6,8 @@ Software for the automated tool imaging machinery prototype for use and proof-of
 
 This repository contains software to operate and interface with an automated imaging system designed for tool inspection, logging, and analysis. The system aims to streamline tool monitoring in industrial environments by automating the process of capturing, processing, and storing images of various tools.
 
+Note that some of the python code in the repo is from the Automated Tool Imaging System from last semester (SP25) and is not up-to-date with our current goals. Such files are uploaded to the repo primarily for referencing purposes.
+
 ## Features
 
 - Automated image capture and storage
