@@ -5,6 +5,7 @@ import cv2
 import time
 from datetime import datetime
 import threading
+import numpy as np
 #import RPi.GPIO as GPIO
 
 # Hardware control flag (False for Windows) so set true on raspberry pi
@@ -139,22 +140,17 @@ class MicroscopeManager:
                 cam.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)  # Reduced resolution
                 cam.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
                 cam.set(cv2.CAP_PROP_AUTOFOCUS, 0)
-                #cam.set(cv2.CAP_PROP_FPS, 5)
+                cam.set(cv2.CAP_PROP_FPS, 30)
                 fps = cam.get(cv2.CAP_PROP_FPS)
                 print(f"Camera supports a frame rate of: {fps} FPS")
-                frame_num = cam.set(cv2.CAP_PROP_POS_FRAMES)
-                print(f"Camera @ frame number: {frame_num}")
-                time.sleep(0.5)  # Warmup period
+                #time.sleep(0.5)  # Warmup period
 
                 # capture stab frames
-                for _ in range(5):
+                for i in range(20):
                     ret, frame = cam.read()
-                    frame_num = cam.get(cv2.CAP_PROP_POS_FRAMES)
-                    print(f"Camera @ frame number: {frame_num}")
-                    time.sleep(0.5)
-
-                cam.set(cv2.CAP_PROP_POS_FRAMES, 60)
-                ret, frame = cam.read()
+                    if i == 19:
+                        ret, frame = cam.read()
+                    #time.sleep(0.5)
 
                 if ret:
                     # edge detection
