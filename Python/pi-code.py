@@ -5,13 +5,13 @@ import cv2
 import time
 from datetime import datetime
 import threading
-import RPi.GPIO as GPIO
+#import RPi.GPIO as GPIO
 
 # Hardware control flag (False for Windows) so set true on raspberry pi
-RUNNING_ON_RASPBERRY_PI = True
+RUNNING_ON_RASPBERRY_PI = False
 
 # Where the images are stored, changes depending on where you are storing it (this is an example)
-BASE_DIR = r'/home/seco-tools-capstone/image'
+BASE_DIR = r'/home/ey/Documents/psu/Y4/460W/automated_tool_imaging_interface/test_pics'
 CANNY_THRESHOLD1 = 100  # Lower threshol
 CANNY_THRESHOLD2 = 200  # Upper threshold for edge detection
 
@@ -131,6 +131,7 @@ class MicroscopeManager:
         file_paths = []
 
         for idx, pos in zip(self.camera_indices, self.positions):
+            idx=4 # to only use the microscope on hand
             print(f"Opening camera {idx} for {pos} view...")
             try:
                 # open camera with V4L2 backend
@@ -138,12 +139,22 @@ class MicroscopeManager:
                 cam.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)  # Reduced resolution
                 cam.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
                 cam.set(cv2.CAP_PROP_AUTOFOCUS, 0)
-                time.sleep(1.0)  # Warmup period
+                #cam.set(cv2.CAP_PROP_FPS, 5)
+                fps = cam.get(cv2.CAP_PROP_FPS)
+                print(f"Camera supports a frame rate of: {fps} FPS")
+                frame_num = cam.set(cv2.CAP_PROP_POS_FRAMES)
+                print(f"Camera @ frame number: {frame_num}")
+                time.sleep(0.5)  # Warmup period
 
                 # capture stab frames
                 for _ in range(5):
                     ret, frame = cam.read()
-                    time.sleep(0.1)
+                    frame_num = cam.get(cv2.CAP_PROP_POS_FRAMES)
+                    print(f"Camera @ frame number: {frame_num}")
+                    time.sleep(0.5)
+
+                cam.set(cv2.CAP_PROP_POS_FRAMES, 60)
+                ret, frame = cam.read()
 
                 if ret:
                     # edge detection
@@ -153,12 +164,16 @@ class MicroscopeManager:
                         frame, 0.7,
                         cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR), 0.3, 0
                     )
-                   
+
                     # filename
                     filename = f"T{tool_number}_FL{flute_number}_OD{layer_number}_{pos}_{position}deg.jpg"
                     file_path = os.path.join(folder_path, filename)
                     cv2.imwrite(file_path, edge_overlay)
+                    filename2 = f"T{tool_number}_FL{flute_number}_OD{layer_number}_{pos}_{position}deg_orig.jpg"
+                    file_path2 = os.path.join(folder_path, filename2)
+                    cv2.imwrite(file_path2, frame)
                     file_paths.append(file_path)
+                    file_paths.append(file_path2)
                     print(f"Captured {pos} view: {filename}")
                 else:
                     print(f"Failed to capture image from camera {idx}")
