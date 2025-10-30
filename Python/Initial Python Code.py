@@ -11,7 +11,7 @@ import threading
 RUNNING_ON_RASPBERRY_PI = False
 
 # Where the images are stored, changes depending on where you are storing it (this is an example)
-BASE_DIR = r'C:\Users\Ruchira\The Pennsylvania State University\Images'
+BASE_DIR = r"C:\Users\csmid\OneDrive - The Pennsylvania State University\Images"
 CANNY_THRESHOLD1 = 100  # Lower threshold for edge detection
 CANNY_THRESHOLD2 = 200  # Upper threshold for edge detection
 
@@ -100,14 +100,14 @@ class ActuatorController:
         # extend the actuator so it moves tool holder up
         GPIO.output(self.in1, GPIO.HIGH)
         GPIO.output(self.in2, GPIO.LOW)
-        time.sleep(duration)
+        #time.sleep(duration)
         self.stop()
 
     def retract(self, duration=1.0):
         # retract the actuator so it move tool holder down
         GPIO.output(self.in1, GPIO.LOW)
         GPIO.output(self.in2, GPIO.HIGH)
-        time.sleep(duration)
+       # time.sleep(duration)
         self.stop()
     
     def stop(self):
@@ -149,7 +149,8 @@ class MicroscopeManager:
         """Capture images from all cameras"""
         timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
         date_folder = datetime.now().strftime('%Y-%m-%d')
-        folder_path = os.path.join(BASE_DIR, date_folder)
+        tool_folder = f"T{tool_number}_FL{flute_number}_OD{layer_number}.jpg"
+        folder_path = os.path.join(BASE_DIR, tool_folder)
         os.makedirs(folder_path, exist_ok=True)
 
         file_paths = []
@@ -161,7 +162,7 @@ class MicroscopeManager:
             # Take multiple frames to ensure good quality
             for _ in range(5):
                 ret, frame = camera.read()
-                time.sleep(0.1)
+               # time.sleep(0.1)
 
             if ret:
                 # Edge detection processing
@@ -173,7 +174,8 @@ class MicroscopeManager:
                     frame, 0.7,
                     cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR), 0.3,0)
                 # "T# FL# OD L# M/AP"
-                file_name = f"T{tool_number}_FL{flute_number}_OD{layer_number}_{positions[i]}_{position}deg.jpg"
+                file_nameOld = f"T{tool_number}_FL{flute_number}_OD{layer_number}_{positions[i]}_{position}deg.jpg"
+                file_name = f"{datetime.now().strftime('%Y-%m-%d')}.jpg"
                 file_path = os.path.join(folder_path, file_name)
 
                 # save the image
@@ -206,7 +208,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
         # initial positioning by starting with tool fully down
         actuator.retract(1.5)
         # wait for stability
-        time.sleep(0.5)
+       # time.sleep(0.5)
 
         # go through 20 positions
         for position in range(20):
@@ -216,7 +218,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
             # move to the measurement position and move the tool to camera view position
             actuator.extend(1.0)
             # wait for stability
-            time.sleep(0.5)
+           # time.sleep(0.5)
 
             # capture images from all cameras
             image_paths = cameras.capture_images(tool_number, flute_number, layer_number, current_angle)
@@ -224,13 +226,13 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
 
             # move back down
             actuator.retract(1.0)
-            time.sleep(0.5)
+           # time.sleep(0.5)
 
             # rotate to next position if not the last one
             if position < 19:
                 stepper.rotate_degrees(angle_increment)
                 #wait
-                time.sleep(0.5)
+              #  time.sleep(0.5)
 
         #print(f"\nCapture sequence completed. Total images: {len(all_file_paths)}")
         return all_file_paths
