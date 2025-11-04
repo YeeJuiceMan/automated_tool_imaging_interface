@@ -18,8 +18,19 @@ CANNY_THRESHOLD2 = 200  # Upper threshold for edge detection
 
 # Hardware Configuration
 # Actuator Pins (L298N)
-ACT_IN1 = 17
-ACT_IN2 = 18
+#ACT_IN1 = 17
+#ACT_IN2 = 18
+#PLAN - USE 5,6, 13, 19 for One and 16,26, 20,21 for Second
+ACT_IN1_BLACK = 5
+ACT_IN1_GREEN= 6
+ACT_IN1_RED = 13
+ACT_IN1_BLUE = 19
+
+ACT_IN2_BLACK = 16
+ACT_IN2_GREEN= 26
+ACT_IN2_RED = 20
+ACT_IN2_BLUE = 21
+
 
 # Stepper Motor Pins (L298N)
 STP_IN1 = 22
