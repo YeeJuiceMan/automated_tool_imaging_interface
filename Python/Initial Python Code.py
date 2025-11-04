@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
+from tkinter import ttk
 import os
 import cv2
 import time
@@ -175,7 +176,7 @@ class MicroscopeManager:
                     cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR), 0.3,0)
                 # "T# FL# OD L# M/AP"
                 file_nameOld = f"T{tool_number}_FL{flute_number}_OD{layer_number}_{positions[i]}_{position}deg.jpg"
-                file_name = f"{datetime.now().strftime('%Y-%m-%d')}.jpg"
+                file_name = f"{datetime.now().strftime('%Y-%m-%d')}_{positions[i]}_{position}deg.jpg"
                 file_path = os.path.join(folder_path, file_name)
 
                 # save the image
@@ -269,14 +270,19 @@ class ToolInterface:
         tk.Label(self.window, text="Tool Number:").grid(row=0, column=0, sticky="w", padx=5, pady=5)
         tk.Label(self.window, text="Flute Number:").grid(row=1, column=0, sticky="w", padx=5, pady=5)
         tk.Label(self.window, text="Layer Number:").grid(row=2, column=0, sticky="w", padx=5, pady=5)
+        tk.Label(self.window, text="Color:").grid(row=3, column=0, sticky="w", padx=5, pady=5)
+        
 
         self.tool_number = tk.Entry(self.window)
         self.flute_number = tk.Entry(self.window)
         self.layer_number = tk.Entry(self.window)
-
+        self.color = tk.StringVar(value="Select Color")  # default display text
+        self.color_dropdown = ttk.Combobox(self.window, textvariable=self.color, values=["Silver", "Black", "Gold"],state="readonly" )
+        
         self.tool_number.grid(row=0, column=1, padx=5, pady=5)
         self.flute_number.grid(row=1, column=1, padx=5, pady=5)
         self.layer_number.grid(row=2, column=1, padx=5, pady=5)
+        self.color_dropdown.grid(row=3, column=1, padx=5, pady=5)
 
         # status display
         self.status_text = tk.StringVar()
@@ -284,14 +290,14 @@ class ToolInterface:
         self.status_label = tk.Label(self.window, textvariable=self.status_text,
                                     bd=1, relief=tk.SUNKEN, anchor=tk.W)
         # ew is parameter in Tinker GUI ew aligns the widget to both left and right edges, making it stretch horizontally across its grid cell
-        self.status_label.grid(row=4, column=0, columnspan=2, sticky="ew", padx=5, pady=5)
+        self.status_label.grid(row=5, column=0, columnspan=2, sticky="ew", padx=5, pady=5)
 
         # control buttons
         self.start_button = tk.Button(self.window, text="Start Imaging", command=self.start_process)
-        self.start_button.grid(row=3, column=0, padx=5, pady=10)
+        self.start_button.grid(row=4, column=0, padx=5, pady=10)
 
         self.exit_button = tk.Button(self.window, text="Exit", command=self.cleanup_and_exit)
-        self.exit_button.grid(row=3, column=1, padx=5, pady=10)
+        self.exit_button.grid(row=4, column=1, padx=5, pady=10)
 
     def update_status(self, message):
         # update status display
@@ -305,8 +311,9 @@ class ToolInterface:
             tool_number = self.tool_number.get().strip()
             flute_number = self.flute_number.get().strip()
             layer_number = self.layer_number.get().strip()
+            color = self.color.get().strip()
 
-            if not tool_number or not flute_number or not layer_number:
+            if not tool_number or not flute_number or not layer_number or color == "Select color":
                 messagebox.showerror("Error", "All fields are required!")
                 return
 
@@ -315,8 +322,7 @@ class ToolInterface:
 
             # start imaging in a separate thread
             self.update_status("Imaging process started...")
-            thread = threading.Thread(target=self.run_imaging_sequence,
-                                     args=(tool_number, flute_number, layer_number))
+            thread = threading.Thread(target=self.run_imaging_sequence, args=(tool_number, flute_number, layer_number))
             thread.daemon = True
             thread.start()
 
