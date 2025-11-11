@@ -180,7 +180,7 @@ class MicroscopeManager:
         """Capture images from all cameras"""
         timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
         date_folder = datetime.now().strftime('%Y-%m-%d')
-        tool_folder = f"T{tool_number}_FL{flute_number}_OD{layer_number}.jpg"
+        tool_folder = f"T{tool_number}_FL{flute_number}_OD{layer_number}"
         folder_path = os.path.join(BASE_DIR, tool_folder)
         os.makedirs(folder_path, exist_ok=True)
 
