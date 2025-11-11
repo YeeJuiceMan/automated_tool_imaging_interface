@@ -33,10 +33,10 @@ VERT_STP2_BLUE = 21
 
 
 # Stepper Motor Pins (L298N)
-STP_IN1 = 22
-STP_IN2 = 23
-STP_IN3 = 24
-STP_IN4 = 25
+STP_IN1 = 22  #Red A
+STP_IN2 = 23  #Yellow A
+STP_IN3 = 24  #Gray B
+STP_IN4 = 25  #Green B
 
 # Stepper Configuration
 STEP_SEQ = [
