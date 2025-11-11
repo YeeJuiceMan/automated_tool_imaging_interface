@@ -134,7 +134,6 @@ class ActuatorController:
 
     def extend(self, degrees=90):
         #Raise tool holder (both steppers move upward).
-        print("Extending")
         self.move(degrees, upward=True)
 
     def retract(self, degrees=90):
