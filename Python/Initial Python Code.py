@@ -21,15 +21,15 @@ CANNY_THRESHOLD2 = 200  # Upper threshold for edge detection
 #ACT_IN1 = 17
 #ACT_IN2 = 18
 #PLAN - USE 5,6, 13, 19 for One and 16,26, 20,21 for Second
-ACT_IN1_BLACK = 5
-ACT_IN1_GREEN= 6
-ACT_IN1_RED = 13
-ACT_IN1_BLUE = 19
+VERT_STP1_BLACK = 5
+VERT_STP1_GREEN= 6
+VERT_STP1_RED = 13
+VERT_STP1_BLUE = 19
 
-ACT_IN2_BLACK = 16
-ACT_IN2_GREEN= 26
-ACT_IN2_RED = 20
-ACT_IN2_BLUE = 21
+VERT_STP2_BLACK = 16
+VERT_STP2_GREEN= 26
+VERT_STP2_RED = 20
+VERT_STP2_BLUE = 21
 
 
 # Stepper Motor Pins (L298N)
@@ -78,10 +78,14 @@ def setup_gpio():
     GPIO.setwarnings(False)
         
     # Actuator pins and stepper motor pins
-    GPIO.setup([ACT_IN1, ACT_IN2, STP_IN1, STP_IN2, STP_IN3, STP_IN4], GPIO.OUT)
+    GPIO.setup([VERT_STP1_BLACK, VERT_STP1_GREEN, VERT_STP1_RED, VERT_STP1_BLUE, 
+                VERT_STP2_BLACK, VERT_STP2_GREEN, VERT_STP2_RED, VERT_STP2_BLUE, 
+                STP_IN1, STP_IN2, STP_IN3, STP_IN4], GPIO.OUT)
         
     # Initialize all pins to LOW bc HIGH disables stepper and acuator (active LOW)
-    GPIO.output([ACT_IN1, ACT_IN2, STP_IN1, STP_IN2, STP_IN3, STP_IN4], GPIO.LOW)
+    GPIO.output([VERT_STP1_BLACK, VERT_STP1_GREEN, VERT_STP1_RED, VERT_STP1_BLUE, 
+                VERT_STP2_BLACK, VERT_STP2_GREEN, VERT_STP2_RED, VERT_STP2_BLUE, 
+                  STP_IN1, STP_IN2, STP_IN3, STP_IN4], GPIO.LOW)
 
 class StepperController:
     def __init__(self, step_pins, step_sequence, steps_per_rev, gear_ratio):
@@ -103,28 +107,43 @@ class StepperController:
                     GPIO.output(self.step_pins[pin], step[pin])
                 time.sleep(self.step_delay)
 
+
 class ActuatorController:
-    def __init__(self, in1, in2):
-        self.in1 = in1
-        self.in2 = in2
+    def __init__(self, stepper1_pins, stepper2_pins, step_sequence, steps_per_rev, gear_ratio):
+        # Each actuator now has two vertical stepper motors
+        self.stepper1_pins = stepper1_pins
+        self.stepper2_pins = stepper2_pins
+        self.step_sequence = step_sequence
+        self.steps_per_rev = steps_per_rev
+        self.gear_ratio = gear_ratio
+        self.step_delay = 0.01
+        self.current_step = 0
 
-    def extend(self, duration=1.0):
-        # extend the actuator so it moves tool holder up
-        GPIO.output(self.in1, GPIO.HIGH)
-        GPIO.output(self.in2, GPIO.LOW)
-        #time.sleep(duration)
-        self.stop()
+    def move(self, degrees, upward=True):
+        # Calculate how many steps to move
+        steps = int((degrees / 360) * self.steps_per_rev * self.gear_ratio)
+        sequence = self.step_sequence if upward else self.step_sequence[::-1]
 
-    def retract(self, duration=1.0):
-        # retract the actuator so it move tool holder down
-        GPIO.output(self.in1, GPIO.LOW)
-        GPIO.output(self.in2, GPIO.HIGH)
-       # time.sleep(duration)
-        self.stop()
-    
+        for _ in range(steps):
+            for step in sequence:
+                # Apply the same step pattern to both motors
+                for pin in range(4):
+                    GPIO.output(self.stepper1_pins[pin], step[pin])
+                    GPIO.output(self.stepper2_pins[pin], step[pin])
+                time.sleep(self.step_delay)
+
+    def extend(self, degrees=90):
+        """Raise tool holder (both steppers move upward)."""
+        self.move(degrees, upward=True)
+
+    def retract(self, degrees=90):
+        """Lower tool holder (both steppers move downward)."""
+        self.move(degrees, upward=False)
+
     def stop(self):
-        GPIO.output(self.in1, GPIO.LOW)
-        GPIO.output(self.in2, GPIO.LOW)
+        """Disable all coils."""
+        for pin in self.stepper1_pins + self.stepper2_pins:
+            GPIO.output(pin, GPIO.LOW)
     
 class MicroscopeManager:
     def __init__(self, camera_indices):
@@ -218,8 +237,8 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
         all_file_paths = []
 
         # initial positioning by starting with tool fully down
-        actuator.retract(1.5)
-        # wait for stability
+        actuator.retract(90)
+        # wait for stability 
        # time.sleep(0.5)
 
         # go through 20 positions
@@ -228,7 +247,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
             print(f"\nCapturing at position {position+1}/20 ({current_angle}°)")
 
             # move to the measurement position and move the tool to camera view position
-            actuator.extend(1.0)
+            actuator.extend(90)
             # wait for stability
            # time.sleep(0.5)
 
@@ -237,7 +256,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
             all_file_paths.extend(image_paths)
 
             # move back down
-            actuator.retract(1.0)
+            actuator.retract(90)
            # time.sleep(0.5)
 
             # rotate to next position if not the last one
@@ -270,7 +289,14 @@ class ToolInterface:
             gear_ratio=GEAR_RATIO
         )
         
-        self.actuator = ActuatorController(ACT_IN1, ACT_IN2)
+       # self.actuator = ActuatorController(ACT_IN1, ACT_IN2)  OLD ACTUATOR
+        self.actuator = ActuatorController(
+                stepper1_pins=[VERT_STP1_BLACK, VERT_STP1_GREEN, VERT_STP1_RED, VERT_STP1_BLUE],
+                stepper2_pins=[VERT_STP2_BLACK, VERT_STP2_GREEN, VERT_STP2_RED, VERT_STP2_BLUE],
+            step_sequence=STEP_SEQ,
+            steps_per_rev=STEPS_PER_REVOLUTION,
+            gear_ratio=GEAR_RATIO
+        )
         self.cameras = MicroscopeManager(CAMERA_INDICES)
 
          # GUI elements
@@ -324,7 +350,7 @@ class ToolInterface:
             layer_number = self.layer_number.get().strip()
             color = self.color.get().strip()
 
-            if not tool_number or not flute_number or not layer_number or color == "Select color":
+            if not tool_number or not flute_number or not layer_number or color == "Select Color":
                 messagebox.showerror("Error", "All fields are required!")
                 return
 
