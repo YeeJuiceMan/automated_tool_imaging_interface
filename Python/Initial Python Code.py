@@ -133,15 +133,15 @@ class ActuatorController:
                 time.sleep(self.step_delay)
 
     def extend(self, degrees=90):
-        """Raise tool holder (both steppers move upward)."""
+        #Raise tool holder (both steppers move upward).
         self.move(degrees, upward=True)
 
     def retract(self, degrees=90):
-        """Lower tool holder (both steppers move downward)."""
+        #Lower tool holder (both steppers move downward).
         self.move(degrees, upward=False)
 
     def stop(self):
-        """Disable all coils."""
+        #Disable all coils.
         for pin in self.stepper1_pins + self.stepper2_pins:
             GPIO.output(pin, GPIO.LOW)
     
