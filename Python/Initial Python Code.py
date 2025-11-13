@@ -228,7 +228,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
     #run  the automated capture sequence to get 20 images per tool
     try:
         # calculate angle increment for 20 positions by 360 degrees / 20 positions = 18 degrees per step
-        angle_increment = 18
+        angle_increment = 6
 
         # duration calculation to ensure under 8 minutes sso each position takes about 20 seconds which include movement, stabilization, capture
         # 20 positions * 20 seconds = 400 seconds which would be 6.67 minutes
@@ -366,9 +366,8 @@ class ToolInterface:
         except Exception as e:
             messagebox.showerror("Error", f"Failed to start: {str(e)}")
             self.start_button.config(state=tk.NORMAL)
-
-    def auto_start(self):
-    # You can hardcode values or load them from a config
+    
+    def auto_start(self):  
         tool_number = "1"
         flute_number = "1"
         layer_number = "1"
@@ -380,7 +379,7 @@ class ToolInterface:
         )
         thread.daemon = True
         thread.start()
-
+    
     def run_imaging_sequence(self, tool_number, flute_number, layer_number):
         """Run the imaging sequence in a background thread"""
         try:
