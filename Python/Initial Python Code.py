@@ -349,7 +349,7 @@ class ToolInterface:
             layer_number = self.layer_number.get().strip()
             color = self.color.get().strip()
 
-            if not tool_number or not flute_number or not layer_number or color == "Select Color":
+            if not tool_number or not flute_number or not layer_number:
                 messagebox.showerror("Error", "All fields are required!")
                 return
 
