@@ -10,7 +10,6 @@ import RPi.GPIO as GPIO
 
 # Hardware control flag (False for Windows) so set true on raspberry pi
 RUNNING_ON_RASPBERRY_PI = True
-
 # Where the images are stored, changes depending on where you are storing it (this is an example)
 BASE_DIR = r"C:\Users\csmid\OneDrive - The Pennsylvania State University\Images"
 CANNY_THRESHOLD1 = 100  # Lower threshold for edge detection
@@ -237,9 +236,9 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
         all_file_paths = []
 
         # initial positioning by starting with tool fully down
-        actuator.retract(90)
+        actuator.retract(360)
         # wait for stability 
-       # time.sleep(0.5)
+        time.sleep(0.5)
 
         # go through 20 positions
         for position in range(20):
