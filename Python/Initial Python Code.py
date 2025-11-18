@@ -157,9 +157,9 @@ class MicroscopeManager:
                 camera.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
                 camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
                 # disable autofocus
-                camera.set(cv2.CAP_PROP_AUTOFOCUS, 0)
+                #camera.set(cv2.CAP_PROP_AUTOFOCUS, 0)
                 # fixed focus for magnification
-                camera.set(cv2.CAP_PROP_FOCUS, 150)
+                #camera.set(cv2.CAP_PROP_FOCUS, 150)
 
                 if camera.isOpened():
                     self.cameras.append(camera)
