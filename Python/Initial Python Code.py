@@ -236,7 +236,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
         all_file_paths = []
 
         # initial positioning by starting with tool fully down
-        actuator.retract(360)
+        actuator.extend(360)
         # wait for stability 
         time.sleep(0.5)
 
@@ -265,7 +265,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
               #  time.sleep(0.5)
 
         #print(f"\nCapture sequence completed. Total images: {len(all_file_paths)}")
-        actuator.extend(360)
+        actuator.retract(360)
         return all_file_paths
 
     except Exception as e:
