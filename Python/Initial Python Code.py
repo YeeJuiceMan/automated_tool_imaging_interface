@@ -113,7 +113,7 @@ class ActuatorController:
         self.step_sequence = step_sequence
         self.steps_per_rev = steps_per_rev
         self.gear_ratio = gear_ratio
-        self.step_delay = 0.01
+        self.step_delay = 0.02
         self.current_step = 0
 
     def move(self, degrees, upward=True):
@@ -127,6 +127,7 @@ class ActuatorController:
                 for pin in range(4):
                     GPIO.output(self.stepper2_pins[pin], step[pin])
                     GPIO.output(self.stepper1_pins[pin], step[pin])
+                time.sleep(self.step_delay)
                     
 
     def extend(self, degrees=90):
