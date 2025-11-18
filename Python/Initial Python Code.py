@@ -53,7 +53,7 @@ GEAR_RATIO = 20/12.7
 # Camera config
 NUM_CAMERAS = 3
 # USB
-CAMERA_INDICES = [0, 1, 2]
+CAMERA_INDICES = [0, 2, 4]
 
 # Create base directory (if non existant)
 os.makedirs(BASE_DIR, exist_ok=True)
