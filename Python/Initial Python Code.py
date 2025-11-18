@@ -16,9 +16,7 @@ CANNY_THRESHOLD1 = 100  # Lower threshold for edge detection
 CANNY_THRESHOLD2 = 200  # Upper threshold for edge detection
 
 # Hardware Configuration
-# Actuator Pins (L298N)
-#ACT_IN1 = 17
-#ACT_IN2 = 18
+
 #PLAN - USE 5,6, 13, 19 for One and 16,26, 20,21 for Second
 VERT_STP1_BLACK = 5
 VERT_STP1_GREEN= 6
@@ -262,7 +260,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
             if position < 19:
                 stepper.rotate_degrees(angle_increment)
                 #wait
-              #  time.sleep(0.5)
+                time.sleep(0.3)
 
         #print(f"\nCapture sequence completed. Total images: {len(all_file_paths)}")
         actuator.retract(360)
