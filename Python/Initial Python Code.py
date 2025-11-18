@@ -299,7 +299,7 @@ class ToolInterface:
 
          # GUI elements
         self.create_widgets()
-        #self.window.after(1000, self.auto_start)
+        self.window.after(1000, self.auto_start)   #for autostart
 
     def create_widgets(self):
         # input
@@ -365,7 +365,7 @@ class ToolInterface:
         except Exception as e:
             messagebox.showerror("Error", f"Failed to start: {str(e)}")
             self.start_button.config(state=tk.NORMAL)
-    '''
+    
     def auto_start(self):  
         tool_number = "1"
         flute_number = "1"
@@ -378,7 +378,7 @@ class ToolInterface:
         )
         thread.daemon = True
         thread.start()
-    '''
+    
     def run_imaging_sequence(self, tool_number, flute_number, layer_number):
         """Run the imaging sequence in a background thread"""
         try:
