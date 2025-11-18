@@ -258,7 +258,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
            # time.sleep(0.5)
 
             # rotate to next position if not the last one
-            if position < 19:
+            if position < 20:
                 stepper.rotate_degrees(angle_increment)
                 #wait
                 time.sleep(0.3)
