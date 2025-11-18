@@ -227,7 +227,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
     #run  the automated capture sequence to get 20 images per tool
     try:
         # calculate angle increment for 20 positions by 360 degrees / 20 positions = 18 degrees per step
-        angle_increment = 8
+        angle_increment = 5
 
         # duration calculation to ensure under 8 minutes sso each position takes about 20 seconds which include movement, stabilization, capture
         # 20 positions * 20 seconds = 400 seconds which would be 6.67 minutes
