@@ -95,7 +95,7 @@ class StepperController:
 
     def rotate_degrees(self, degrees, clockwise=True):
         # calculate steps needed to rotate by a specific angle in degrees
-        steps = int((degrees / 360) * self.steps_per_rev * self.gear_ratio)
+        steps = int(degrees * self.steps_per_rev )
         direction = 1 if clockwise else -1
         sequence = self.step_sequence if clockwise else self.step_sequence[::-1]
         for _ in range(steps):
