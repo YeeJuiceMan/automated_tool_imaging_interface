@@ -246,7 +246,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
             print(f"\nCapturing at position {position+1}/20 ({current_angle}°)")
 
             # move to the measurement position and move the tool to camera view position
-            actuator.extend(90)
+           # actuator.extend(90)
             # wait for stability
            # time.sleep(0.5)
 
@@ -255,7 +255,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
             all_file_paths.extend(image_paths)
 
             # move back down
-            actuator.retract(90)
+           # actuator.retract(90)
            # time.sleep(0.5)
 
             # rotate to next position if not the last one
@@ -265,6 +265,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
               #  time.sleep(0.5)
 
         #print(f"\nCapture sequence completed. Total images: {len(all_file_paths)}")
+        actuator.extend(360)
         return all_file_paths
 
     except Exception as e:
