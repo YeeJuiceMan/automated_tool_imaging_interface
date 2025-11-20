@@ -53,7 +53,7 @@ GEAR_RATIO = 20/12.7
 # Camera config
 NUM_CAMERAS = 3
 # USB
-CAMERA_INDICES = [0, 2, 4]
+CAMERA_INDICES = [0, 1, 2]
 
 # Create base directory (if non existant)
 os.makedirs(BASE_DIR, exist_ok=True)
@@ -300,7 +300,7 @@ class ToolInterface:
 
          # GUI elements
         self.create_widgets()
-        self.window.after(1000, self.auto_start)   #for autostart
+       # self.window.after(1000, self.auto_start)   #for autostart
 
     def create_widgets(self):
         # input
@@ -367,7 +367,7 @@ class ToolInterface:
             messagebox.showerror("Error", f"Failed to start: {str(e)}")
             self.start_button.config(state=tk.NORMAL)
     
-    def auto_start(self):  
+    '''def auto_start(self):  
         tool_number = "1"
         flute_number = "1"
         layer_number = "1"
@@ -378,7 +378,7 @@ class ToolInterface:
             args=(tool_number, flute_number, layer_number)
         )
         thread.daemon = True
-        thread.start()
+        thread.start()'''
     
     def run_imaging_sequence(self, tool_number, flute_number, layer_number):
         """Run the imaging sequence in a background thread"""
