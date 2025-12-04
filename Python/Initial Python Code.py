@@ -10,6 +10,7 @@ import RPi.GPIO as GPIO
 
 # Hardware control flag (False for Windows) so set true on raspberry pi
 RUNNING_ON_RASPBERRY_PI = True
+AUTO_START = False
 # Where the images are stored, changes depending on where you are storing it (this is an example)
 BASE_DIR = r"C:\Users\csmid\OneDrive - The Pennsylvania State University\Images"
 CANNY_THRESHOLD1 = 100  # Lower threshold for edge detection
@@ -305,7 +306,8 @@ class ToolInterface:
 
          # GUI elements
         self.create_widgets()
-       # self.window.after(1000, self.auto_start)   #for autostart
+        if AUTO_START:
+            self.window.after(1000, self.auto_start)   #for autostart
 
     def create_widgets(self):
         # input
@@ -372,7 +374,7 @@ class ToolInterface:
             messagebox.showerror("Error", f"Failed to start: {str(e)}")
             self.start_button.config(state=tk.NORMAL)
     
-    '''def auto_start(self):  
+    def auto_start(self):  
         tool_number = "1"
         flute_number = "1"
         layer_number = "1"
@@ -383,7 +385,7 @@ class ToolInterface:
             args=(tool_number, flute_number, layer_number)
         )
         thread.daemon = True
-        thread.start()'''
+        thread.start()
     
     def run_imaging_sequence(self, tool_number, flute_number, layer_number):
         """Run the imaging sequence in a background thread"""
