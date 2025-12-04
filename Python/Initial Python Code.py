@@ -132,7 +132,7 @@ class ActuatorController:
                 for pin in range(4):
                     GPIO.output(self.stepper1_pins[pin], step[pin])
                     GPIO.output(self.stepper2_pins[pin], step[pin])
-                    print(self.stepper1_pins, self.stepper2_pins, step)
+                    print(self.stepper1_pins[pin], self.stepper2_pins[pin], step[pin])
                 time.sleep(self.step_delay)
             step_count += 1
 
