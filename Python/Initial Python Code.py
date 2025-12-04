@@ -111,19 +111,6 @@ class StepperController:
                     GPIO.output(self.step_pins[pin], step[pin])
                 time.sleep(self.step_delay)
 
-class Clock:
-    
-    def __init__(self, fps):
-        self.start = time.perf_counter()
-        self.frame_length = 1/fps
-    @property
-    def tick(self):
-        return int((time.perf_counter() - self.start)/self.frame_length)
-
-    def sleep(self):
-        r = self.tick + 1
-        while self.tick < r:
-            time.sleep(1/1000)
 
 class ActuatorController:
     def __init__(self, stepper1_pins, stepper2_pins, step_sequence, steps_per_rev, gear_ratio):
@@ -133,8 +120,8 @@ class ActuatorController:
         self.step_sequence = step_sequence
         self.steps_per_rev = steps_per_rev
         self.gear_ratio = gear_ratio
-        self.step_delay = 0.025
-        self.clock = Clock(50)
+        self.step_delay = 0.02
+      
         self.current_step = 0
 
     def move(self, degrees, upward=True):
@@ -149,8 +136,8 @@ class ActuatorController:
                     GPIO.output(self.stepper1_pins[pin], step[pin])
                     GPIO.output(self.stepper2_pins[pin], step[pin])
                     print(self.stepper1_pins[pin], self.stepper2_pins[pin], step[pin])
-                #time.sleep(self.step_delay)
-                self.clock.sleep()
+                time.sleep(self.step_delay)
+             
                 
             step_count += 1
 
