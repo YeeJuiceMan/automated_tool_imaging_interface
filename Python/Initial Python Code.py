@@ -175,6 +175,7 @@ class MicroscopeManager:
                 camera.set(cv2.CAP_PROP_FRAME_WIDTH, WIDTH)
                 camera.set(cv2.CAP_PROP_FRAME_HEIGHT, HEIGHT)
                 camera.set(cv2.CAP_PROP_AUTOFOCUS, 0)
+                camera.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*"MJPG"))
 
 
                 if camera.isOpened():
