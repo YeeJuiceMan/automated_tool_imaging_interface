@@ -255,9 +255,9 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
         # 20 positions * 20 seconds = 400 seconds which would be 6.67 minutes
 
         all_file_paths = []
-        actuator.retract(900)
+        actuator.extend(900)
         # initial positioning by starting with tool fully down
-        actuator.extend(360)
+        actuator.retract(360)
         # wait for stability 
         time.sleep(0.5)
 
