@@ -55,6 +55,10 @@ GEAR_RATIO = 20/12.7
 NUM_CAMERAS = 3
 # USB
 CAMERA_INDICES = [0, 2, 4]
+if not RUNNING_ON_RASPBERRY_PI:
+    BASE_DIR = r"C:\Users\csmid\OneDrive - The Pennsylvania State University\Images"
+else:
+    BASE_DIR = "/home/ye/Documents/automated_tool_imaging_interface/files"
 
 # Create base directory (if non existant)
 os.makedirs(BASE_DIR, exist_ok=True)
@@ -62,7 +66,6 @@ os.makedirs(BASE_DIR, exist_ok=True)
 
 if not RUNNING_ON_RASPBERRY_PI:
     class DummyGPIO:
-        BASE_DIR = r"C:\Users\csmid\OneDrive - The Pennsylvania State University\Images"
         BCM = OUT = HIGH = LOW = IN = None
         def setmode(self, *args, **kwargs): pass
         def setwarnings(self, *args, **kwargs): pass
@@ -73,7 +76,6 @@ if not RUNNING_ON_RASPBERRY_PI:
     GPIO = DummyGPIO()
 # GPIO(general-purpose input/output) Setup  handles both incoming and outgoing digital signals. As an input port, it can be used to communicate to the CPU the ON/OFF signals received from switches, or the digital readings received from sensors.
 def setup_gpio():
-    BASE_DIR = "/home/ye/Documents/automated_tool_imaging_interface/files"
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
         
@@ -168,7 +170,7 @@ class MicroscopeManager:
                 WIDTH, HEIGHT = 640, 480
 
                 # open captures
-                camera = [cv2.VideoCapture(idx, cv2.CAP_V4L2)]
+                camera = cv2.VideoCapture(idx, cv2.CAP_V4L2)
                 
                 camera.set(cv2.CAP_PROP_FRAME_WIDTH, WIDTH)
                 camera.set(cv2.CAP_PROP_FRAME_HEIGHT, HEIGHT)
