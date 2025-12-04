@@ -135,11 +135,11 @@ class ActuatorController:
                 time.sleep(self.step_delay)
             step_count += 1
 
-            if step_count % 10 == 0:
+            '''if step_count % 10 == 0:
                 for step in sequence:       # one full step only for motor1
                     for pin in range(4):
                         GPIO.output(self.stepper1_pins[pin], step[pin])
-                    time.sleep(self.step_delay)
+                    time.sleep(self.step_delay)'''
 
     def extend(self, degrees=90):
         #Raise tool holder (both steppers move upward).
