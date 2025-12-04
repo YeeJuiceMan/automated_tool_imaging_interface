@@ -243,7 +243,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
         # go through 20 positions
         for position in range(21):
             current_angle = position * angle_increment
-            print(f"\nCapturing at position {position+1}/20 ({current_angle}°)")
+            #print(f"\nCapturing at position {position+1}/20 ({current_angle}°)")
 
             # move to the measurement position and move the tool to camera view position
            # actuator.extend(90)
