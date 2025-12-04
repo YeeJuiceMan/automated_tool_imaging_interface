@@ -125,7 +125,7 @@ class ActuatorController:
         # Calculate how many steps to move
         steps = int((degrees / 360) * self.steps_per_rev * self.gear_ratio)
         sequence = self.step_sequence if upward else self.step_sequence[::-1]
-
+        step_count = 0
         for _ in range(steps):
             for step in sequence:
                 # Apply the same step pattern to both motors
@@ -133,7 +133,13 @@ class ActuatorController:
                     GPIO.output(self.stepper2_pins[pin], step[pin])
                     GPIO.output(self.stepper1_pins[pin], step[pin])
                 time.sleep(self.step_delay)
-                    
+            step_count += 1
+
+            if step_count % 10 == 0:
+                for step in sequence:       # one full step only for motor1
+                    for pin in range(4):
+                        GPIO.output(self.stepper1_pins[pin], step[pin])
+                    time.sleep(self.step_delay)
 
     def extend(self, degrees=90):
         #Raise tool holder (both steppers move upward).
