@@ -118,7 +118,7 @@ class ActuatorController:
         self.step_sequence = step_sequence
         self.steps_per_rev = steps_per_rev
         self.gear_ratio = gear_ratio
-        self.step_delay = 0.005
+        self.step_delay = 0.05
         self.current_step = 0
 
     def move(self, degrees, upward=True):
