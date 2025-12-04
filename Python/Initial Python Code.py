@@ -19,10 +19,10 @@ CANNY_THRESHOLD2 = 200  # Upper threshold for edge detection
 # Hardware Configuration
 
 #PLAN - USE 5,6, 13, 19 for One and 16,26, 20,21 for Second
-VERT_STP1_BLACK = 13
-VERT_STP1_GREEN= 19
-VERT_STP1_RED = 5
-VERT_STP1_BLUE = 6
+VERT_STP1_BLACK = 5
+VERT_STP1_GREEN= 6
+VERT_STP1_RED = 13
+VERT_STP1_BLUE = 19
 
 VERT_STP2_BLACK = 21
 VERT_STP2_GREEN= 20
@@ -135,7 +135,7 @@ class ActuatorController:
                 time.sleep(self.step_delay)
             step_count += 1
 
-            #if step_count % 5 == 0:
+           # if step_count % 10 == 0:
             for step in sequence:       # one full step only for motor1
                 for pin in range(4):
                     GPIO.output(self.stepper1_pins[pin], step[pin])
