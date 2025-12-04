@@ -130,8 +130,8 @@ class ActuatorController:
             for step in sequence:
                 # Apply the same step pattern to both motors
                 for pin in range(4):
-                    GPIO.output(self.stepper2_pins[pin], step[pin])
                     GPIO.output(self.stepper1_pins[pin], step[pin])
+                    GPIO.output(self.stepper2_pins[pin], step[pin])
                 time.sleep(self.step_delay)
             step_count += 1
 
