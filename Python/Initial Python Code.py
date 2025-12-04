@@ -54,7 +54,7 @@ GEAR_RATIO = 20/12.7
 # Camera config
 NUM_CAMERAS = 3
 # USB
-CAMERA_INDICES = [0, 1, 2]
+CAMERA_INDICES = [0, 2, 4]
 
 # Create base directory (if non existant)
 os.makedirs(BASE_DIR, exist_ok=True)
@@ -159,7 +159,7 @@ class MicroscopeManager:
                 camera.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
                 camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
                 # disable autofocus
-                #camera.set(cv2.CAP_PROP_AUTOFOCUS, 0)
+                camera.set(cv2.CAP_PROP_AUTOFOCUS, 0)
                 # fixed focus for magnification
                 #camera.set(cv2.CAP_PROP_FOCUS, 150)
 
