@@ -6,10 +6,10 @@ import cv2
 import time
 from datetime import datetime
 import threading
-import RPi.GPIO as GPIO
+#import RPi.GPIO as GPIO
 
 # Hardware control flag (False for Windows) so set true on raspberry pi
-RUNNING_ON_RASPBERRY_PI = True
+RUNNING_ON_RASPBERRY_PI = False
 AUTO_START = False
 # Where the images are stored, changes depending on where you are storing it (this is an example)
 
@@ -24,10 +24,10 @@ VERT_STP1_GREEN= 6
 VERT_STP1_RED = 13
 VERT_STP1_BLUE = 19
 
-VERT_STP2_BLACK = 16
-VERT_STP2_GREEN= 26
-VERT_STP2_RED = 20
-VERT_STP2_BLUE = 21
+VERT_STP2_BLACK = 21
+VERT_STP2_GREEN= 20
+VERT_STP2_RED = 26
+VERT_STP2_BLUE = 16
 
 
 # Stepper Motor Pins (L298N)
@@ -58,7 +58,7 @@ CAMERA_INDICES = [0, 2, 4]
 if not RUNNING_ON_RASPBERRY_PI:
     BASE_DIR = r"C:\Users\csmid\OneDrive - The Pennsylvania State University\Images"
 else:
-    BASE_DIR = "/home/ye/Documents/automated_tool_imaging_interface/files"
+    BASE_DIR = "/home/seco-tools-capstone/Documents/automated_tool_imaging_interface/files"
 
 # Create base directory (if non existant)
 os.makedirs(BASE_DIR, exist_ok=True)
@@ -176,8 +176,6 @@ class MicroscopeManager:
                 camera.set(cv2.CAP_PROP_FRAME_HEIGHT, HEIGHT)
                 camera.set(cv2.CAP_PROP_AUTOFOCUS, 0)
 
-                cv2.namedWindow('All Cameras', cv2.WINDOW_NORMAL)
-                cv2.resizeWindow('All Cameras', WIDTH * 3, HEIGHT)
 
                 if camera.isOpened():
                     self.cameras.append(camera)
@@ -460,3 +458,4 @@ if __name__ == "__main__":
         #print(f"Critical error: {e}")
         #GPIO.cleanup()
 #sudo apt-get install python3-rpi.gpio python3-opencv
+#/#bin/bash rmmod uvcvideo modprobe uvcvideo nodrop=1 timeout=5000 quirks=0x80
