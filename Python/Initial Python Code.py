@@ -134,7 +134,7 @@ class ActuatorController:
         self.steps_per_rev = steps_per_rev
         self.gear_ratio = gear_ratio
         self.step_delay = 0.025
-        self.clock = Clock(100)
+        self.clock = Clock(50)
         self.current_step = 0
 
     def move(self, degrees, upward=True):
