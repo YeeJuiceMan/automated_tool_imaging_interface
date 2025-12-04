@@ -12,7 +12,7 @@ import RPi.GPIO as GPIO
 RUNNING_ON_RASPBERRY_PI = True
 AUTO_START = False
 # Where the images are stored, changes depending on where you are storing it (this is an example)
-BASE_DIR = r"C:\Users\csmid\OneDrive - The Pennsylvania State University\Images"
+
 CANNY_THRESHOLD1 = 100  # Lower threshold for edge detection
 CANNY_THRESHOLD2 = 200  # Upper threshold for edge detection
 
@@ -62,6 +62,7 @@ os.makedirs(BASE_DIR, exist_ok=True)
 
 if not RUNNING_ON_RASPBERRY_PI:
     class DummyGPIO:
+        BASE_DIR = r"C:\Users\csmid\OneDrive - The Pennsylvania State University\Images"
         BCM = OUT = HIGH = LOW = IN = None
         def setmode(self, *args, **kwargs): pass
         def setwarnings(self, *args, **kwargs): pass
@@ -72,6 +73,7 @@ if not RUNNING_ON_RASPBERRY_PI:
     GPIO = DummyGPIO()
 # GPIO(general-purpose input/output) Setup  handles both incoming and outgoing digital signals. As an input port, it can be used to communicate to the CPU the ON/OFF signals received from switches, or the digital readings received from sensors.
 def setup_gpio():
+    BASE_DIR = "/home/ye/Documents/automated_tool_imaging_interface/files"
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
         
@@ -153,15 +155,27 @@ class MicroscopeManager:
     def initialize_cameras(self):
         for idx in self.camera_indices:
             try:
-                camera = cv2.VideoCapture(idx)
+                '''camera = cv2.VideoCapture(idx)
 
                 # camera for high-quality imaging
-                camera.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
-                camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
+                camera.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+                camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
                 # disable autofocus
                 camera.set(cv2.CAP_PROP_AUTOFOCUS, 0)
                 # fixed focus for magnification
-                #camera.set(cv2.CAP_PROP_FOCUS, 150)
+                #camera.set(cv2.CAP_PROP_FOCUS, 150)'''
+                
+                WIDTH, HEIGHT = 640, 480
+
+                # open captures
+                camera = [cv2.VideoCapture(idx, cv2.CAP_V4L2)]
+                
+                camera.set(cv2.CAP_PROP_FRAME_WIDTH, WIDTH)
+                camera.set(cv2.CAP_PROP_FRAME_HEIGHT, HEIGHT)
+                camera.set(cv2.CAP_PROP_AUTOFOCUS, 0)
+
+                cv2.namedWindow('All Cameras', cv2.WINDOW_NORMAL)
+                cv2.resizeWindow('All Cameras', WIDTH * 3, HEIGHT)
 
                 if camera.isOpened():
                     self.cameras.append(camera)
