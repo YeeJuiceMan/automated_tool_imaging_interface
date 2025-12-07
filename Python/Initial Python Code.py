@@ -116,6 +116,9 @@ class StepperController:
 class ActuatorController:
     def __init__(self, stepper1_pins, stepper2_pins, step_sequence, steps_per_rev, gear_ratio):
         # Each actuator now has two vertical stepper motors
+        self.pi = pigpio.pi()
+        if not self.pi.connected:
+            raise RuntimeError("pigpio daemon not running!")
         self.stepper1_pins = stepper1_pins
         self.stepper2_pins = stepper2_pins
         self.step_sequence = step_sequence
