@@ -7,6 +7,7 @@ import time
 from datetime import datetime
 import threading
 import RPi.GPIO as GPIO
+import pigpio #for up down motors more accurate timing
 
 # Hardware control flag (False for Windows) so set true on raspberry pi
 RUNNING_ON_RASPBERRY_PI = True
@@ -120,27 +121,69 @@ class ActuatorController:
         self.step_sequence = step_sequence
         self.steps_per_rev = steps_per_rev
         self.gear_ratio = gear_ratio
-        self.step_delay = 0.02
+        #self.step_delay = 0.02
+        self.step_delay_us = 20000
       
         self.current_step = 0
 
-    def move(self, degrees, upward=True):
-        # Calculate how many steps to move
+        # Set all pins as outputs
+        for pin in stepper1_pins + stepper2_pins:
+            self.pi.set_mode(pin, pigpio.OUTPUT)
+            self.pi.write(pin, 0)
+        
+    def _generate_wave(self, degrees, upward=True):
+        """Generate a pigpio wave for both motors synchronized."""
         steps = int((degrees / 360) * self.steps_per_rev * self.gear_ratio)
         sequence = self.step_sequence if upward else self.step_sequence[::-1]
-        step_count = 0
+        self.pi.wave_clear()
+        wave = []
         for _ in range(steps):
-            for step in sequence:
-                # Apply the same step pattern to both motors
-                for pin in range(4):
-                    GPIO.output(self.stepper2_pins[pin], step[pin])
-                    #time.sleep(.001)
-                    GPIO.output(self.stepper1_pins[pin], step[pin])
-                    print(self.stepper1_pins[pin], self.stepper2_pins[pin], step[pin])
-                time.sleep(self.step_delay)
+            for coil_state in sequence:
+                pulses = []
+                # motor 1 + motor 2 outputs at the SAME TIME
+                for i in range(4):
+                    pulses.append(pigpio.pulse(
+                        1 << self.stepper1_pins[i] if coil_state[i] else 0,
+                        1 << self.stepper1_pins[i] if not coil_state[i] else 0,
+                        0
+                    ))
+                    pulses.append(pigpio.pulse(
+                        1 << self.stepper2_pins[i] if coil_state[i] else 0,
+                        1 << self.stepper2_pins[i] if not coil_state[i] else 0,
+                        0
+                    ))
+                wave += pulses
+                # pigpio uses microseconds for delays
+                wave.append(pigpio.pulse(0, 0, self.step_delay_us))
+        self.pi.wave_add_generic(wave)
+        return self.pi.wave_create()
+
+    def move(self, degrees, upward=True):
+        wid = self._generate_wave(degrees, upward)
+        self.pi.wave_send_once(wid)
+
+        # Wait until wave completes
+        while self.pi.wave_tx_busy():
+            time.sleep(0.001)
+
+        self.pi.wave_delete(wid)
+
+        # # Calculate how many steps to move
+        # steps = int((degrees / 360) * self.steps_per_rev * self.gear_ratio)
+        # sequence = self.step_sequence if upward else self.step_sequence[::-1]
+        # step_count = 0
+        # for _ in range(steps):
+        #     for step in sequence:
+        #         # Apply the same step pattern to both motors
+        #         for pin in range(4):
+        #             GPIO.output(self.stepper2_pins[pin], step[pin])
+        #             #time.sleep(.001)
+        #             GPIO.output(self.stepper1_pins[pin], step[pin])
+        #             print(self.stepper1_pins[pin], self.stepper2_pins[pin], step[pin])
+        #         time.sleep(self.step_delay)
              
                 
-            step_count += 1
+        #     step_count += 1
 
             '''if step_count % 10 == 0:
             for step in sequence:       # one full step only for motor1
