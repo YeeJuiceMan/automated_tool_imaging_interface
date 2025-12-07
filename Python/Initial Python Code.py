@@ -116,83 +116,38 @@ class StepperController:
 class ActuatorController:
     def __init__(self, stepper1_pins, stepper2_pins, step_sequence, steps_per_rev, gear_ratio):
         # Each actuator now has two vertical stepper motors
-        self.pi = pigpio.pi()
-        if not self.pi.connected:
-            raise RuntimeError("pigpio daemon not running!")
         self.stepper1_pins = stepper1_pins
         self.stepper2_pins = stepper2_pins
         self.step_sequence = step_sequence
         self.steps_per_rev = steps_per_rev
         self.gear_ratio = gear_ratio
-        #self.step_delay = 0.02
-        self.step_delay_us = 20000
+        self.step_delay = 0.02
       
         self.current_step = 0
 
-        # Set all pins as outputs
-        for pin in stepper1_pins + stepper2_pins:
-            self.pi.set_mode(pin, pigpio.OUTPUT)
-            self.pi.write(pin, 0)
-        
-    def _generate_wave(self, degrees, upward=True):
-        """Generate a pigpio wave for both motors synchronized."""
+    def move(self, degrees, upward=True):
+        # Calculate how many steps to move
         steps = int((degrees / 360) * self.steps_per_rev * self.gear_ratio)
         sequence = self.step_sequence if upward else self.step_sequence[::-1]
-        self.pi.wave_clear()
-        wave = []
+        step_count = 0
         for _ in range(steps):
-            for coil_state in sequence:
-                pulses = []
-                # motor 1 + motor 2 outputs at the SAME TIME
-                for i in range(4):
-                    pulses.append(pigpio.pulse(
-                        1 << self.stepper1_pins[i] if coil_state[i] else 0,
-                        1 << self.stepper1_pins[i] if not coil_state[i] else 0,
-                        0
-                    ))
-                    pulses.append(pigpio.pulse(
-                        1 << self.stepper2_pins[i] if coil_state[i] else 0,
-                        1 << self.stepper2_pins[i] if not coil_state[i] else 0,
-                        0
-                    ))
-                wave += pulses
-                # pigpio uses microseconds for delays
-                wave.append(pigpio.pulse(0, 0, self.step_delay_us))
-        self.pi.wave_add_generic(wave)
-        return self.pi.wave_create()
-
-    def move(self, degrees, upward=True):
-        wid = self._generate_wave(degrees, upward)
-        self.pi.wave_send_once(wid)
-
-        # Wait until wave completes
-        while self.pi.wave_tx_busy():
-            time.sleep(0.001)
-
-        self.pi.wave_delete(wid)
-
-        # # Calculate how many steps to move
-        # steps = int((degrees / 360) * self.steps_per_rev * self.gear_ratio)
-        # sequence = self.step_sequence if upward else self.step_sequence[::-1]
-        # step_count = 0
-        # for _ in range(steps):
-        #     for step in sequence:
-        #         # Apply the same step pattern to both motors
-        #         for pin in range(4):
-        #             GPIO.output(self.stepper2_pins[pin], step[pin])
-        #             #time.sleep(.001)
-        #             GPIO.output(self.stepper1_pins[pin], step[pin])
-        #             print(self.stepper1_pins[pin], self.stepper2_pins[pin], step[pin])
-        #         time.sleep(self.step_delay)
+            for step in sequence:
+                # Apply the same step pattern to both motors
+                for pin in range(4):
+                    GPIO.output(self.stepper2_pins[pin], step[pin])
+                    #time.sleep(.001)
+                    GPIO.output(self.stepper1_pins[pin], step[pin])
+                    print(self.stepper1_pins[pin], self.stepper2_pins[pin], step[pin])
+                time.sleep(self.step_delay)
              
                 
-        #     step_count += 1
+            step_count += 1
 
-            # '''if step_count % 10 == 0:
-            # for step in sequence:       # one full step only for motor1
-            #     for pin in range(4):
-            #         GPIO.output(self.stepper1_pins[pin], step[pin])
-            #     time.sleep(self.step_delay)'''
+            '''if step_count % 10 == 0:
+            for step in sequence:       # one full step only for motor1
+                for pin in range(4):
+                    GPIO.output(self.stepper1_pins[pin], step[pin])
+                time.sleep(self.step_delay)'''
 
     def extend(self, degrees=90):
         #Raise tool holder (both steppers move upward).
@@ -235,7 +190,6 @@ class MicroscopeManager:
                 camera.set(cv2.CAP_PROP_FRAME_HEIGHT, HEIGHT)
                 camera.set(cv2.CAP_PROP_AUTOFOCUS, 0)
                 camera.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*"MJPG"))
-                camera.set(cv2.CAP_PROP_FPS, 10)
 
 
                 if camera.isOpened():
