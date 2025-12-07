@@ -134,20 +134,24 @@ class ActuatorController:
             for step in sequence:
                 # Apply the same step pattern to both motors
                 for pin in range(4):
-                    GPIO.output(self.stepper2_pins[pin], step[pin])
-                    #time.sleep(.001)
-                    GPIO.output(self.stepper1_pins[pin], step[pin])
+                    # GPIO.output(self.stepper2_pins[pin], step[pin])
+                    # GPIO.output(self.stepper1_pins[pin], step[pin])
+                    # Motor 1
+                    GPIO.output(self.stepper1_pins[0], step[0])
+                    GPIO.output(self.stepper1_pins[1], step[1])
+                    GPIO.output(self.stepper1_pins[2], step[2])
+                    GPIO.output(self.stepper1_pins[3], step[3])
+
+                    # Motor 2
+                    GPIO.output(self.stepper2_pins[0], step[0])
+                    GPIO.output(self.stepper2_pins[1], step[1])
+                    GPIO.output(self.stepper2_pins[2], step[2])
+                    GPIO.output(self.stepper2_pins[3], step[3])
                     print(self.stepper1_pins[pin], self.stepper2_pins[pin], step[pin])
                 time.sleep(self.step_delay)
              
                 
             step_count += 1
-
-            '''if step_count % 10 == 0:
-            for step in sequence:       # one full step only for motor1
-                for pin in range(4):
-                    GPIO.output(self.stepper1_pins[pin], step[pin])
-                time.sleep(self.step_delay)'''
 
     def extend(self, degrees=90):
         #Raise tool holder (both steppers move upward).
@@ -263,7 +267,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
         # 20 positions * 20 seconds = 400 seconds which would be 6.67 minutes
 
         all_file_paths = []
-        actuator.retract(360)
+        actuator.extend(360)
         # initial positioning by starting with tool fully down
         #actuator.retract(360)
         # wait for stability 
