@@ -120,7 +120,7 @@ class ActuatorController:
         self.step_sequence = step_sequence
         self.steps_per_rev = steps_per_rev
         self.gear_ratio = gear_ratio
-        self.step_delay = 0.005
+        self.step_delay = 0.01
       
         self.current_step = 0
 
@@ -134,7 +134,7 @@ class ActuatorController:
                 # Apply the same step pattern to both motors
                 for pin in range(4):
                     GPIO.output(self.stepper2_pins[pin], step[pin])
-                    time.sleep(.001)
+                    #time.sleep(.001)
                     GPIO.output(self.stepper1_pins[pin], step[pin])
                     print(self.stepper1_pins[pin], self.stepper2_pins[pin], step[pin])
                 time.sleep(self.step_delay)
