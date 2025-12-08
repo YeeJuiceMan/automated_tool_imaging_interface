@@ -7,11 +7,11 @@ import cv2
 import time
 from datetime import datetime
 import threading
-import RPi.GPIO as GPIO
-import pigpio #for up down motors more accurate timing
+#import RPi.GPIO as GPIO
+#import pigpio #for up down motors more accurate timing
 
 # Hardware control flag (False for Windows) so set true on raspberry pi
-RUNNING_ON_RASPBERRY_PI = True
+RUNNING_ON_RASPBERRY_PI = False
 AUTO_START = False
 # Where the images are stored, changes depending on where you are storing it (this is an example)
 
@@ -185,8 +185,6 @@ class MicroscopeManager:
     def initialize_cameras(self):
         for idx in self.camera_indices:
             try:
-         
-                
                 WIDTH, HEIGHT = 640, 480
 
                 # open captures
@@ -260,7 +258,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
 
 
         all_file_paths = []
-        actuator.extend(400)
+        '''actuator.extend(400)
         for _ in range (50):
             actuator.retract(400)
             time.sleep(3)
@@ -269,7 +267,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
         #actuator.retract(200)
         #actuator.retract(800)
         time.sleep(0.5)
-        actuator.extend(800)
+        actuator.extend(800)'''
         # initial positioning by starting with tool fully down
        
         # wait for stability 
@@ -305,7 +303,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
                 time.sleep(0.3)
 
         #print(f"\nCapture sequence completed. Total images: {len(all_file_paths)}")
-        actuator.retract(800)
+        #actuator.retract(800)
         return all_file_paths
 
     except Exception as e:
