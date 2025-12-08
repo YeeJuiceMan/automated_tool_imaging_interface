@@ -431,7 +431,7 @@ class ToolInterface:
             )
             self.move_threadd.start()
 
-            self.alignd_bool = True
+            self.align_bool = True
             self.up_stat = False
             self.alignd_button.config(text="STOP Align Down")
 
