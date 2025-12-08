@@ -119,6 +119,7 @@ class ActuatorController:
         self.steps_per_rev = steps_per_rev
         self.gear_ratio = gear_ratio
         self.step_delay = 0.0015
+        self.stop_flag = True
       
         self.current_step = 0
 
@@ -131,27 +132,28 @@ class ActuatorController:
         print(sequence)
         step_count = 0
         for _ in range(steps):
-            for step in sequence:
-                # Apply the same step pattern to both motors
-                for pin in range(4):
-                    # GPIO.output(self.stepper2_pins[pin], step[pin])
-                    # GPIO.output(self.stepper1_pins[pin], step[pin])
-                    # Motor 1
-                    GPIO.output(self.stepper1_pins[0], step[0])
-                    GPIO.output(self.stepper1_pins[1], step[1])
-                    GPIO.output(self.stepper1_pins[2], step[2])
-                    GPIO.output(self.stepper1_pins[3], step[3])
+            if self.stop_flag == False:
+                for step in sequence:
+                    # Apply the same step pattern to both motors
+                    for pin in range(4):
+                        # GPIO.output(self.stepper2_pins[pin], step[pin])
+                        # GPIO.output(self.stepper1_pins[pin], step[pin])
+                        # Motor 1
+                        GPIO.output(self.stepper1_pins[0], step[0])
+                        GPIO.output(self.stepper1_pins[1], step[1])
+                        GPIO.output(self.stepper1_pins[2], step[2])
+                        GPIO.output(self.stepper1_pins[3], step[3])
 
-                    # Motor 2
-                    GPIO.output(self.stepper2_pins[0], step[0])
-                    GPIO.output(self.stepper2_pins[1], step[1])
-                    GPIO.output(self.stepper2_pins[2], step[2])
-                    GPIO.output(self.stepper2_pins[3], step[3])
-                    #print(self.stepper1_pins[pin], self.stepper2_pins[pin], step[pin])
-                time.sleep(self.step_delay)
-             
-                
-            step_count += 1
+                        # Motor 2
+                        GPIO.output(self.stepper2_pins[0], step[0])
+                        GPIO.output(self.stepper2_pins[1], step[1])
+                        GPIO.output(self.stepper2_pins[2], step[2])
+                        GPIO.output(self.stepper2_pins[3], step[3])
+                        #print(self.stepper1_pins[pin], self.stepper2_pins[pin], step[pin])
+                    time.sleep(self.step_delay)
+                    step_count += 1
+            else: break
+
 
     def extend(self, degrees=90):
         #Raise tool holder (both steppers move upward).
@@ -394,7 +396,7 @@ class ToolInterface:
         if not self.align_bool:
         # Start retracting in background thread
             self.move_thread = threading.Thread(
-                target=self.actuator.retract, args=(2000,), daemon=True
+                target=self.actuator.extend, args=(2000,), daemon=True
             )
             self.move_thread.start()
 
