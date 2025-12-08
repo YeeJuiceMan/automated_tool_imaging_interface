@@ -25,10 +25,10 @@ VERT_STP1_GREEN= 6
 VERT_STP1_RED = 13
 VERT_STP1_BLUE = 19
 
-VERT_STP2_BLACK = 16
-VERT_STP2_GREEN= 26
-VERT_STP2_RED = 20
-VERT_STP2_BLUE = 21
+VERT_STP2_BLACK = 21
+VERT_STP2_GREEN= 20
+VERT_STP2_RED = 26
+VERT_STP2_BLUE = 16
 
 
 # Stepper Motor Pins (L298N)
@@ -267,7 +267,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
         # 20 positions * 20 seconds = 400 seconds which would be 6.67 minutes
 
         all_file_paths = []
-        actuator.retract(360)
+        actuator.extend(360)
         # initial positioning by starting with tool fully down
         #actuator.retract(360)
         # wait for stability 
