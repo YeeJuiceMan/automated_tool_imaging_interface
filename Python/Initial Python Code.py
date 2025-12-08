@@ -390,7 +390,7 @@ class ToolInterface:
         self.status_label = tk.Label(self.window, textvariable=self.status_text,
                                     bd=1, relief=tk.SUNKEN, anchor=tk.W)
         # ew is parameter in Tinker GUI ew aligns the widget to both left and right edges, making it stretch horizontally across its grid cell
-        self.status_label.grid(row=5, column=0, columnspan=2, sticky="ew", padx=5, pady=5)
+        self.status_label.grid(row=5, column=0, columnspan=2, sticky="ew", padx=0, pady=5)
 
         # control buttons
         self.start_button = tk.Button(self.window, text="Start Imaging", command=self.start_process)
