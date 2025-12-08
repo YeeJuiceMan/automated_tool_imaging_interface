@@ -228,21 +228,21 @@ class MicroscopeManager:
                # time.sleep(0.1)
 
             if ret:
-                # Edge detection processing
-                gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-                edges = cv2.Canny(gray, CANNY_THRESHOLD1, CANNY_THRESHOLD2)
+                # # Edge detection processing
+                # gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                # edges = cv2.Canny(gray, CANNY_THRESHOLD1, CANNY_THRESHOLD2)
                 
-                # Create edge overlay
-                edge_overlay = cv2.addWeighted(
-                    frame, 0.7,
-                    cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR), 0.3,0)
+                # # Create edge overlay
+                # edge_overlay = cv2.addWeighted(
+                #     frame, 0.7,
+                #     cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR), 0.3,0)
                 # "T# FL# OD L# M/AP"
                 file_nameOld = f"T{tool_number}_FL{flute_number}_OD{layer_number}_{positions[i]}_{position}deg.jpg"
                 file_name = f"{datetime.now().strftime('%Y-%m-%d')}_{positions[i]}_{position}deg.jpg"
                 file_path = os.path.join(folder_path, file_name)
 
                 # save the image
-                cv2.imwrite(file_path, edge_overlay)
+                cv2.imwrite(file_path, frame)
                 file_paths.append(file_path)
                 print(f"Image captured: {file_path}")
             else:
