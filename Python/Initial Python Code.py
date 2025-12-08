@@ -397,10 +397,10 @@ class ToolInterface:
         self.start_button.grid(row=4, column=0, padx=5, pady=10)
 
         self.alignu_button = tk.Button(self.window, text="Align Up", command=self.align_up)
-        self.alignu_button.grid(row=4, column=1, padx=1, pady=10)
+        self.alignu_button.grid(row=4, column=1, padx=1, pady=1)
 
         self.alignd_button = tk.Button(self.window, text="Align Down", command=self.align_down)
-        self.alignd_button.grid(row=4, column=2, padx=1, pady=10)
+        self.alignd_button.grid(row=4, column=2, padx=1, pady=1)
 
         self.exit_button = tk.Button(self.window, text="Exit", command=self.cleanup_and_exit)
         self.exit_button.grid(row=4, column=3, padx=5, pady=10)
