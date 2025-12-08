@@ -157,12 +157,12 @@ class ActuatorController:
 
     def extend(self, degrees=90):
         #Raise tool holder (both steppers move upward).
-        self.stop_flag = True
+        self.stop_flag = False
         self.move(degrees, upward=True)
 
     def retract(self, degrees=90):
         #Lower tool holder (both steppers move downward).
-        self.stop_flag = True
+        self.stop_flag = False
         self.move(degrees, upward=False)
 
     def stop(self):
