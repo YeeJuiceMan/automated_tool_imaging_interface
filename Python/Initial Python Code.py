@@ -397,7 +397,7 @@ class ToolInterface:
         self.alignu_button.grid(row=4, column=1, padx=5, pady=10)
 
         self.alignd_button = tk.Button(self.window, text="Align Down", command=self.align_down)
-        self.alignd_button.grid(row=4, column=2, padx=5, pady=10)
+        self.alignd_button.grid(row=4, column=2, padx=1, pady=10)
 
         self.exit_button = tk.Button(self.window, text="Exit", command=self.cleanup_and_exit)
         self.exit_button.grid(row=4, column=3, padx=5, pady=10)
@@ -424,7 +424,7 @@ class ToolInterface:
         if not self.align_bool and self.up_stat:
         # Start retracting in background thread
             self.move_thread = threading.Thread(
-                target=self.actuator.retract, args=(2000,), daemon=True
+                target=self.actuator.extend, args=(2000,), daemon=True
             )
             self.move_thread.start()
 
