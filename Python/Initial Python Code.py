@@ -403,7 +403,7 @@ class ToolInterface:
         self.exit_button.grid(row=4, column=3, padx=5, pady=10)
 
     def align_up(self):
-        if not self.align_bool and not self.up_stat:
+        if not self.align_bool:
         # Start retracting in background thread
             self.move_thread = threading.Thread(
                 target=self.actuator.retract, args=(2000,), daemon=True
@@ -412,25 +412,25 @@ class ToolInterface:
 
             self.align_bool = True
             self.up_stat = True
-            self.align_button.config(text="STOP Align Up")
+            self.alignu_button.config(text="STOP Align Up")
 
         elif self.up_stat: #only disable motor when moving UP
             # Second press → stop
             self.actuator.stop_flag = True    # tell actuator to stop
             self.align_bool = False
-            self.align_button.config(text="Align Up")
+            self.alignu_button.config(text="Align Up")
 
     def align_down(self):
-        if not self.align_bool and self.up_stat:
+        if not self.align_bool:
         # Start retracting in background thread
             self.move_thread = threading.Thread(
                 target=self.actuator.extend, args=(2000,), daemon=True
             )
             self.move_thread.start()
 
-            self.align_bool = True
+            self.alignd_bool = True
             self.up_stat = False
-            self.align_button.config(text="STOP Align Down")
+            self.alignd_button.config(text="STOP Align Down")
 
         elif not self.up_stat: # only disable motor when moving DOWN
             # Second press → stop
