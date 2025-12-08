@@ -270,7 +270,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
         #actuator.extend(90)
         #actuator.retract(600)
         time.sleep(0.5)
-        actuator.extend(600)
+        actuator.extend(800)
         # initial positioning by starting with tool fully down
         #actuator.retract(360)
         # wait for stability 
