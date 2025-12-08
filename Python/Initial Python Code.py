@@ -119,7 +119,7 @@ class ActuatorController:
         self.steps_per_rev = steps_per_rev
         self.gear_ratio = gear_ratio
         self.step_delay = 0.0015
-        self.stop_flag = True
+        self.stop_flag = False
       
         self.current_step = 0
 
@@ -157,10 +157,12 @@ class ActuatorController:
 
     def extend(self, degrees=90):
         #Raise tool holder (both steppers move upward).
+        self.stop_flag = True
         self.move(degrees, upward=True)
 
     def retract(self, degrees=90):
         #Lower tool holder (both steppers move downward).
+        self.stop_flag = True
         self.move(degrees, upward=False)
 
     def stop(self):
