@@ -386,7 +386,7 @@ class ToolInterface:
 
         # status display
         self.status_text = tk.StringVar()
-        self.status_text.set("Ready to start...\nPress 'align up/down' to move cameras\nPress again to stop")
+        self.status_text.set("Ready to start. Press 'align up/down' to move cameras. Press again to stop")
         self.status_label = tk.Label(self.window, textvariable=self.status_text,
                                     bd=1, relief=tk.SUNKEN, anchor=tk.W)
         # ew is parameter in Tinker GUI ew aligns the widget to both left and right edges, making it stretch horizontally across its grid cell
