@@ -323,6 +323,8 @@ class ToolInterface:
     def __init__(self):
         self.window = tk.Tk()
         self.window.title("Tool Imaging Station")
+        self.align_bool = False
+        self.move_thread = None
 
         # set up GPIO
         if RUNNING_ON_RASPBERRY_PI:
@@ -372,7 +374,7 @@ class ToolInterface:
 
         # status display
         self.status_text = tk.StringVar()
-        self.status_text.set("Ready to start...")
+        self.status_text.set("Ready to start...\n Press 'align' to move cameras up and press again to stop")
         self.status_label = tk.Label(self.window, textvariable=self.status_text,
                                     bd=1, relief=tk.SUNKEN, anchor=tk.W)
         # ew is parameter in Tinker GUI ew aligns the widget to both left and right edges, making it stretch horizontally across its grid cell
@@ -382,8 +384,28 @@ class ToolInterface:
         self.start_button = tk.Button(self.window, text="Start Imaging", command=self.start_process)
         self.start_button.grid(row=4, column=0, padx=5, pady=10)
 
+        self.align_button = tk.Button(self.window, text="Align", command=self.align_up)
+        self.align_button.grid(row=4, column=2, padx=5, pady=10)
+
         self.exit_button = tk.Button(self.window, text="Exit", command=self.cleanup_and_exit)
-        self.exit_button.grid(row=4, column=1, padx=5, pady=10)
+        self.exit_button.grid(row=4, column=2, padx=5, pady=10)
+
+    def align_up(self):
+        if not self.align_bool:
+        # Start retracting in background thread
+            self.move_thread = threading.Thread(
+                target=self.actuator.retract, args=(2000,), daemon=True
+            )
+            self.move_thread.start()
+
+            self.align_bool = True
+            self.align_button.config(text="STOP Align")
+
+        else:
+            # Second press → stop
+            self.actuator.stop_flag = True    # tell actuator to stop
+            self.align_bool = False
+            self.align_button.config(text="Align")
 
     def update_status(self, message):
         # update status display
