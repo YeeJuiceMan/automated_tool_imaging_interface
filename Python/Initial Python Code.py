@@ -126,6 +126,8 @@ class ActuatorController:
         self.current_step = 0
 
     def move(self, degrees, upward=True):
+        print("Motor1 pins:", self.stepper1_pins)
+        print("Motor2 pins:", self.stepper2_pins)
         # Calculate how many steps to move
         steps = int((degrees / 360) * self.steps_per_rev * self.gear_ratio)
         sequence = self.step_sequence if upward else self.step_sequence[::-1]
@@ -147,7 +149,7 @@ class ActuatorController:
                     GPIO.output(self.stepper2_pins[1], step[1])
                     GPIO.output(self.stepper2_pins[2], step[2])
                     GPIO.output(self.stepper2_pins[3], step[3])
-                    print(self.stepper1_pins[pin], self.stepper2_pins[pin], step[pin])
+                    #print(self.stepper1_pins[pin], self.stepper2_pins[pin], step[pin])
                 time.sleep(self.step_delay)
              
                 
@@ -267,7 +269,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
         # 20 positions * 20 seconds = 400 seconds which would be 6.67 minutes
 
         all_file_paths = []
-        actuator.extend(360)
+        actuator.retract(360)
         # initial positioning by starting with tool fully down
         #actuator.retract(360)
         # wait for stability 
