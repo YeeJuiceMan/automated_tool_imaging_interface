@@ -152,7 +152,9 @@ class ActuatorController:
                         #print(self.stepper1_pins[pin], self.stepper2_pins[pin], step[pin])
                     time.sleep(self.step_delay)
                     step_count += 1
-            else: break
+            else:
+                self.stop()
+                break
         return 0
 
 
@@ -436,7 +438,7 @@ class ToolInterface:
             # Second press → stop
             self.actuator.stop_flag = True    # tell actuator to stop
             self.align_bool = False
-            self.align_button.config(text="Align Down")
+            self.alignd_button.config(text="Align Down")
 
     def update_status(self, message):
         # update status display
