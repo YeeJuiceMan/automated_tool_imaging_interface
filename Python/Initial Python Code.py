@@ -334,7 +334,8 @@ class ToolInterface:
         self.window = tk.Tk()
         self.window.title("Tool Imaging Station")
         self.align_bool = False
-        self.move_thread = None
+        self.move_threadu = None
+        self.move_threadd = None
         self.up_stat = True
 
         # set up GPIO
@@ -396,7 +397,7 @@ class ToolInterface:
         self.start_button.grid(row=4, column=0, padx=5, pady=10)
 
         self.alignu_button = tk.Button(self.window, text="Align Up", command=self.align_up)
-        self.alignu_button.grid(row=4, column=1, padx=5, pady=10)
+        self.alignu_button.grid(row=4, column=1, padx=1, pady=10)
 
         self.alignd_button = tk.Button(self.window, text="Align Down", command=self.align_down)
         self.alignd_button.grid(row=4, column=2, padx=1, pady=10)
@@ -407,10 +408,10 @@ class ToolInterface:
     def align_up(self):
         if not self.align_bool:
         # Start retracting in background thread
-            self.move_thread = threading.Thread(
+            self.move_threadu = threading.Thread(
                 target=self.actuator.retract, args=(2000,), daemon=True
             )
-            self.move_thread.start()
+            self.move_threadu.start()
 
             self.align_bool = True
             self.up_stat = True
@@ -425,10 +426,10 @@ class ToolInterface:
     def align_down(self):
         if not self.align_bool:
         # Start retracting in background thread
-            self.move_thread = threading.Thread(
+            self.move_threadd = threading.Thread(
                 target=self.actuator.extend, args=(2000,), daemon=True
             )
-            self.move_thread.start()
+            self.move_threadd.start()
 
             self.alignd_bool = True
             self.up_stat = False
