@@ -90,8 +90,6 @@ def setup_gpio():
                 VERT_STP2_BLACK, VERT_STP2_GREEN, VERT_STP2_RED, VERT_STP2_BLUE, 
                   STP_IN1, STP_IN2, STP_IN3, STP_IN4], GPIO.LOW)
 
-
-
 class StepperController:
     def __init__(self, step_pins, step_sequence, steps_per_rev, gear_ratio):
         self.step_pins = step_pins
@@ -111,7 +109,6 @@ class StepperController:
                 for pin in range(4):
                     GPIO.output(self.step_pins[pin], step[pin])
                 time.sleep(self.step_delay)
-
 
 class ActuatorController:
     def __init__(self, stepper1_pins, stepper2_pins, step_sequence, steps_per_rev, gear_ratio):
@@ -149,7 +146,7 @@ class ActuatorController:
                     GPIO.output(self.stepper2_pins[1], step[1])
                     GPIO.output(self.stepper2_pins[2], step[2])
                     GPIO.output(self.stepper2_pins[3], step[3])
-                    #print(self.stepper1_pins[pin], self.stepper2_pins[pin], step[pin])
+                    print(self.stepper1_pins[pin], self.stepper2_pins[pin], step[pin])
                 time.sleep(self.step_delay)
              
                 
@@ -269,7 +266,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
         # 20 positions * 20 seconds = 400 seconds which would be 6.67 minutes
 
         all_file_paths = []
-        actuator.retract(360)
+        actuator.extend(360)
         # initial positioning by starting with tool fully down
         #actuator.retract(360)
         # wait for stability 
