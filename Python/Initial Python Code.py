@@ -7,11 +7,11 @@ import cv2
 import time
 from datetime import datetime
 import threading
-#import RPi.GPIO as GPIO
-#import pigpio #for up down motors more accurate timing
+import RPi.GPIO as GPIO
+import pigpio #for up down motors more accurate timing
 
 # Hardware control flag (False for Windows) so set true on raspberry pi
-RUNNING_ON_RASPBERRY_PI = False
+RUNNING_ON_RASPBERRY_PI = True
 AUTO_START = False
 # Where the images are stored, changes depending on where you are storing it (this is an example)
 
