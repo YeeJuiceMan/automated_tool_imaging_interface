@@ -118,7 +118,7 @@ class ActuatorController:
         self.step_sequence = step_sequence
         self.steps_per_rev = steps_per_rev
         self.gear_ratio = gear_ratio
-        self.step_delay = 0.002
+        self.step_delay = 0.0015
       
         self.current_step = 0
 
@@ -267,8 +267,8 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
         # 20 positions * 20 seconds = 400 seconds which would be 6.67 minutes
 
         all_file_paths = []
-        actuator.retract(1200)
-        #actuator.extend(750)
+        #actuator.retract(1200)
+        actuator.extend(600)
         # initial positioning by starting with tool fully down
         #actuator.retract(360)
         # wait for stability 
