@@ -153,22 +153,26 @@ class ActuatorController:
                     time.sleep(self.step_delay)
                     step_count += 1
             else: break
+        return 0
 
 
     def extend(self, degrees=90):
         #Raise tool holder (both steppers move upward).
         self.stop_flag = False
         self.move(degrees, upward=True)
+        return 0
 
     def retract(self, degrees=90):
         #Lower tool holder (both steppers move downward).
         self.stop_flag = False
         self.move(degrees, upward=False)
+        return 0
 
     def stop(self):
         #Disable all coils.
         for pin in self.stepper1_pins + self.stepper2_pins:
             GPIO.output(pin, GPIO.LOW)
+        return 0-
     
 class MicroscopeManager:
     def __init__(self, camera_indices):
@@ -329,6 +333,7 @@ class ToolInterface:
         self.window.title("Tool Imaging Station")
         self.align_bool = False
         self.move_thread = None
+        self.up_stat = True
 
         # set up GPIO
         if RUNNING_ON_RASPBERRY_PI:
@@ -378,7 +383,7 @@ class ToolInterface:
 
         # status display
         self.status_text = tk.StringVar()
-        self.status_text.set("Ready to start...\n Press 'align' to move cameras up and press again to stop")
+        self.status_text.set("Ready to start...\nPress 'align up/down' to move cameras\nPress again to stop")
         self.status_label = tk.Label(self.window, textvariable=self.status_text,
                                     bd=1, relief=tk.SUNKEN, anchor=tk.W)
         # ew is parameter in Tinker GUI ew aligns the widget to both left and right edges, making it stretch horizontally across its grid cell
@@ -388,28 +393,50 @@ class ToolInterface:
         self.start_button = tk.Button(self.window, text="Start Imaging", command=self.start_process)
         self.start_button.grid(row=4, column=0, padx=5, pady=10)
 
-        self.align_button = tk.Button(self.window, text="Align", command=self.align_up)
-        self.align_button.grid(row=4, column=1, padx=5, pady=10)
+        self.alignu_button = tk.Button(self.window, text="Align Up", command=self.align_up)
+        self.alignu_button.grid(row=4, column=1, padx=5, pady=10)
+
+        self.alignd_button = tk.Button(self.window, text="Align Down", command=self.align_down)
+        self.alignd_button.grid(row=4, column=2, padx=5, pady=10)
 
         self.exit_button = tk.Button(self.window, text="Exit", command=self.cleanup_and_exit)
-        self.exit_button.grid(row=4, column=2, padx=5, pady=10)
+        self.exit_button.grid(row=4, column=3, padx=5, pady=10)
 
     def align_up(self):
-        if not self.align_bool:
+        if not self.align_bool and not self.up_stat:
         # Start retracting in background thread
             self.move_thread = threading.Thread(
-                target=self.actuator.extend, args=(2000,), daemon=True
+                target=self.actuator.retract, args=(2000,), daemon=True
             )
             self.move_thread.start()
 
             self.align_bool = True
-            self.align_button.config(text="STOP Align")
+            self.up_stat = True
+            self.align_button.config(text="STOP Align Up")
 
-        else:
+        elif self.up_stat: #only disable motor when moving UP
             # Second press → stop
             self.actuator.stop_flag = True    # tell actuator to stop
             self.align_bool = False
-            self.align_button.config(text="Align")
+            self.align_button.config(text="Align Up")
+
+    def align_down(self):
+        if not self.align_bool and self.up_stat:
+        # Start retracting in background thread
+            self.move_thread = threading.Thread(
+                target=self.actuator.retract, args=(2000,), daemon=True
+            )
+            self.move_thread.start()
+
+            self.align_bool = True
+            self.up_stat = False
+            self.align_button.config(text="STOP Align Down")
+
+        elif not self.up_stat: # only disable motor when moving DOWN
+            # Second press → stop
+            self.actuator.stop_flag = True    # tell actuator to stop
+            self.align_bool = False
+            self.align_button.config(text="Align Down")
 
     def update_status(self, message):
         # update status display
