@@ -1,3 +1,4 @@
+
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk
@@ -136,8 +137,7 @@ class ActuatorController:
                 for step in sequence:
                     # Apply the same step pattern to both motors
                     for pin in range(4):
-                        # GPIO.output(self.stepper2_pins[pin], step[pin])
-                        # GPIO.output(self.stepper1_pins[pin], step[pin])
+                       
                         # Motor 1
                         GPIO.output(self.stepper1_pins[0], step[0])
                         GPIO.output(self.stepper1_pins[1], step[1])
@@ -185,15 +185,7 @@ class MicroscopeManager:
     def initialize_cameras(self):
         for idx in self.camera_indices:
             try:
-                '''camera = cv2.VideoCapture(idx)
-
-                # camera for high-quality imaging
-                camera.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-                camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-                # disable autofocus
-                camera.set(cv2.CAP_PROP_AUTOFOCUS, 0)
-                # fixed focus for magnification
-                #camera.set(cv2.CAP_PROP_FOCUS, 150)'''
+         
                 
                 WIDTH, HEIGHT = 640, 480
 
@@ -238,14 +230,7 @@ class MicroscopeManager:
                # time.sleep(0.1)
 
             if ret:
-                # # Edge detection processing
-                # gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-                # edges = cv2.Canny(gray, CANNY_THRESHOLD1, CANNY_THRESHOLD2)
-                
-                # # Create edge overlay
-                # edge_overlay = cv2.addWeighted(
-                #     frame, 0.7,
-                #     cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR), 0.3,0)
+               
                 # "T# FL# OD L# M/AP"
                 file_nameOld = f"T{tool_number}_FL{flute_number}_OD{layer_number}_{positions[i]}_{position}deg.jpg"
                 file_name = f"{datetime.now().strftime('%Y-%m-%d')}_{positions[i]}_{position}deg.jpg"
@@ -273,8 +258,6 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
         # calculate angle increment for 20 positions by 360 degrees / 20 positions = 18 degrees per step
         angle_increment = 9.5
 
-        # duration calculation to ensure under 8 minutes sso each position takes about 20 seconds which include movement, stabilization, capture
-        # 20 positions * 20 seconds = 400 seconds which would be 6.67 minutes
 
         all_file_paths = []
         actuator.extend(400)
@@ -288,7 +271,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
         time.sleep(0.5)
         actuator.extend(800)
         # initial positioning by starting with tool fully down
-        #actuator.retract(360)
+       
         # wait for stability 
         time.sleep(0.5)
 
