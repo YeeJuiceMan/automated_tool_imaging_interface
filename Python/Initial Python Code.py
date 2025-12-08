@@ -172,7 +172,7 @@ class ActuatorController:
         #Disable all coils.
         for pin in self.stepper1_pins + self.stepper2_pins:
             GPIO.output(pin, GPIO.LOW)
-        return 0-
+        return 0
     
 class MicroscopeManager:
     def __init__(self, camera_indices):
