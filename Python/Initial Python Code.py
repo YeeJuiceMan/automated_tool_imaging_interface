@@ -422,9 +422,6 @@ class ToolInterface:
         self.alignd_button = tk.Button(self.window, text="Align Down", command=self.align_down)
         self.alignd_button.grid(row=4, column=3, padx=1, pady=10)
 
-        self.alignd_button = tk.Button(self.window, text=" Reset Y Position", command=self.reset_pos)
-        self.alignd_button.grid(row=4, column=4, padx=1, pady=10)
-
         self.exit_button = tk.Button(self.window, text="Exit", command=self.cleanup_and_exit)
         self.exit_button.grid(row=4, column=5, padx=1, pady=10)
 
@@ -479,9 +476,6 @@ class ToolInterface:
             print("Returned:", CAM_YPOS, ",", result)            
             self.align_bool = False
             self.alignd_button.config(text="Align Down")
-
-    def reset_pos(self):
-        return
 
     def bit_top(self): # will save in folder in the future
         global CAM_BIT_TOP_POS, CAM_YPOS
