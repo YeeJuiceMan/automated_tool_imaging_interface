@@ -443,7 +443,7 @@ class ToolInterface:
             self.up_stat = True
             self.alignu_button.config(text="STOP Align Up")
 
-        elif self.up_stat: #only disable motor when moving UP
+        elif self.up_stat and not self.top: #only disable motor when moving UP
             # Second press → stop
             self.actuator.stop_flag = True    # tell actuator to stop
             result = self.move_threadu.join()
@@ -472,7 +472,7 @@ class ToolInterface:
             self.up_stat = False
             self.alignd_button.config(text="STOP Align Down")
 
-        elif not self.up_stat: # only disable motor when moving DOWN
+        elif not self.up_stat and not self.bottom: # only disable motor when moving DOWN
             # Second press → stop
             self.actuator.stop_flag = True    # tell actuator to stop
             result = self.move_threadd.join()
