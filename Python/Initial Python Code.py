@@ -126,8 +126,8 @@ class ActuatorController:
         self.gear_ratio = gear_ratio
         self.step_delay = 0.001
         self.stop_flag = False
-        self.cam_min = 0
-        self.cam_max = 940
+        self.cam_min = cam_min
+        self.cam_max = cam_max
         self.current_step = 0
 
     def move(self, degrees, upward=True):
@@ -344,8 +344,8 @@ class ToolInterface:
         self.move_threadu = None
         self.move_threadd = None
         self.up_stat = True
-        self.cam_min = 0
-        self.cam_max = 940
+        self.cam_min = cam_min
+        self.cam_max = cam_max
 
         # set up GPIO
         if RUNNING_ON_RASPBERRY_PI:
