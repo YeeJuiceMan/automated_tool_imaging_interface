@@ -173,15 +173,15 @@ class ActuatorController:
 
     def extend(self, degrees=90):
         #Raise tool holder (both steppers move upward).
-        global CAM_YPOS
-        if CAM_YPOS == self.cam_max: return 0
+        #global CAM_YPOS
+        #if CAM_YPOS == self.cam_max: return 0
         self.stop_flag = False
         return self.move(degrees, upward=True)
 
     def retract(self, degrees=90):
         #Lower tool holder (both steppers move downward).
-        global CAM_YPOS
-        if CAM_YPOS == self.cam_min: return 0
+        #global CAM_YPOS
+        #if CAM_YPOS == self.cam_min: return 0
         self.stop_flag = False
         return self.move(degrees, upward=False)
 
