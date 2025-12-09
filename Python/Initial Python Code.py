@@ -8,7 +8,6 @@ import time
 import datetime
 import RPi.GPIO as GPIO
 from threading import Thread
-import json
 
 # Hardware control flag (False for Windows) so set true on raspberry pi
 RUNNING_ON_RASPBERRY_PI = True
@@ -423,12 +422,15 @@ class ToolInterface:
         self.alignd_button = tk.Button(self.window, text="Align Down", command=self.align_down)
         self.alignd_button.grid(row=4, column=3, padx=1, pady=10)
 
+        self.alignd_button = tk.Button(self.window, text=" Reset Y Position", command=self.reset_pos)
+        self.alignd_button.grid(row=4, column=4, padx=1, pady=10)
+
         self.exit_button = tk.Button(self.window, text="Exit", command=self.cleanup_and_exit)
-        self.exit_button.grid(row=4, column=4, padx=1, pady=10)
+        self.exit_button.grid(row=4, column=5, padx=1, pady=10)
 
     def align_up(self):
         global CAM_YPOS
-        if not self.align_bool and CAM_YPOS > self.cam_min:
+        if not self.align_bool and CAM_YPOS >= self.cam_min:
             # Start retracting in background thread
             self.move_threadu = CustomThread(
                 target=self.actuator.retract,
@@ -447,14 +449,14 @@ class ToolInterface:
             result = self.move_threadu.join()
             print(result)
             CAM_YPOS -= result
-            if CAM_YPOS < self.cam_min: CAM_YPOS = 0
+            if CAM_YPOS < self.cam_min: CAM_YPOS = self.cam_min
             print("Returned:", CAM_YPOS, ",", result)            
             self.align_bool = False
             self.alignu_button.config(text="Align Up")
 
     def align_down(self):
         global CAM_YPOS
-        if not self.align_bool and CAM_YPOS < self.cam_max:
+        if not self.align_bool and CAM_YPOS <= self.cam_max:
         # Start retracting in background thread
             self.move_threadd = CustomThread(
                 target=self.actuator.extend,
@@ -473,9 +475,13 @@ class ToolInterface:
             result = self.move_threadd.join()
             print(result)
             CAM_YPOS += result
+            if CAM_YPOS > self.cam_max: CAM_YPOS = self.cam_max
             print("Returned:", CAM_YPOS, ",", result)            
             self.align_bool = False
             self.alignd_button.config(text="Align Down")
+
+    def reset_pos(self):
+        return
 
     def bit_top(self): # will save in folder in the future
         global CAM_BIT_TOP_POS, CAM_YPOS
