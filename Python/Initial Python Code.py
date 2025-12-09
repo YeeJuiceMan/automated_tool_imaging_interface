@@ -366,7 +366,7 @@ class ToolInterface:
         self.layer_number.grid(row=2, column=1, padx=5, pady=5, columnspan=2)
         self.height.grid(row=3, column=1, padx=5, pady=5, columnspan=2)
 
-        self.color_dropdown.grid(row=3, column=1, padx=5, pady=5)
+        self.color_dropdown.grid(row=3, column=1, padx=5, pady=5, columnspan=2)
 
         # status display
         self.status_text = tk.StringVar()
