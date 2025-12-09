@@ -141,7 +141,7 @@ class ActuatorController:
         step_count = 0
         degree_count = 0
         for _ in range(steps):
-            if self.stop_flag == False:
+            if not self.stop_flag:
                 for step in sequence:
                     # Apply the same step pattern to both motors
                     for pin in range(4):
@@ -174,14 +174,14 @@ class ActuatorController:
     def extend(self, degrees=90):
         #Raise tool holder (both steppers move upward).
         global CAM_YPOS
-        if CAM_YPOS == self.cam_min: return 0
+        if CAM_YPOS == self.cam_max: return 0
         self.stop_flag = False
         return self.move(degrees, upward=True)
 
     def retract(self, degrees=90):
         #Lower tool holder (both steppers move downward).
         global CAM_YPOS
-        if CAM_YPOS == self.cam_max: return 0
+        if CAM_YPOS == self.cam_min: return 0
         self.stop_flag = False
         return self.move(degrees, upward=False)
 
