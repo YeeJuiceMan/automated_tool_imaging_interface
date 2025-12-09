@@ -68,6 +68,8 @@ os.makedirs(BASE_DIR, exist_ok=True)
 # Current position of camera (top is 0)
 CAM_YPOS = 0
 CAM_BIT_TOP_POS = 0
+CAM_MIN = 0
+CAM_MAX = 940
 
 if not RUNNING_ON_RASPBERRY_PI:
     class DummyGPIO:
@@ -124,10 +126,12 @@ class ActuatorController:
         self.gear_ratio = gear_ratio
         self.step_delay = 0.001
         self.stop_flag = False
-      
+        self.cam_min = 0
+        self.cam_max = 940
         self.current_step = 0
 
     def move(self, degrees, upward=True):
+        global CAM_YPOS
         print("Motor1 pins:", self.stepper1_pins)
         print("Motor2 pins:", self.stepper2_pins)
         # Calculate how many steps to move
@@ -135,6 +139,7 @@ class ActuatorController:
         sequence = self.step_sequence if upward else self.step_sequence[::-1]
         print(sequence)
         step_count = 0
+        degree_count = 0
         for _ in range(steps):
             if self.stop_flag == False:
                 for step in sequence:
@@ -155,10 +160,15 @@ class ActuatorController:
                         #print(self.stepper1_pins[pin], self.stepper2_pins[pin], step[pin])
                     time.sleep(self.step_delay)
                     step_count += 1
+                    degree_count = int(round((step_count / (self.steps_per_rev * self.gear_ratio)) * 90))
+                    if (upward and CAM_YPOS - degree_count <= self.cam_min) or (not upward and CAM_YPOS + degree_count >= self.cam_max):
+                        self.stop()
+                        break
             else:
                 self.stop()
+                degree_count = int(round((step_count / (self.steps_per_rev * self.gear_ratio)) * 90))
                 break
-        return int(round((step_count / (self.steps_per_rev * self.gear_ratio)) * 90))
+        return degree_count
 
 
     def extend(self, degrees=90):
@@ -334,6 +344,8 @@ class ToolInterface:
         self.move_threadu = None
         self.move_threadd = None
         self.up_stat = True
+        self.cam_min = 0
+        self.cam_max = 940
 
         # set up GPIO
         if RUNNING_ON_RASPBERRY_PI:
@@ -354,6 +366,8 @@ class ToolInterface:
             step_sequence=STEP_SEQ,
             steps_per_rev=STEPS_PER_REVOLUTION,
             gear_ratio=GEAR_RATIO
+            cam_min = CAM_MIN
+            cam_max = CAM_MAX
         )
         self.cameras = MicroscopeManager(CAMERA_INDICES)
 
@@ -429,6 +443,7 @@ class ToolInterface:
             result = self.move_threadu.join()
             print(result)
             CAM_YPOS -= result
+            if CAM_YPOS < self.cam_min: CAM_YPOS = 0
             print("Returned:", CAM_YPOS, ",", result)            
             self.align_bool = False
             self.alignu_button.config(text="Align Up")
@@ -454,7 +469,6 @@ class ToolInterface:
             result = self.move_threadd.join()
             print(result)
             CAM_YPOS += result
-            if CAM_YPOS < 0: CAM_YPOS = 0
             print("Returned:", CAM_YPOS, ",", result)            
             self.align_bool = False
             self.alignd_button.config(text="Align Down")
@@ -560,7 +574,7 @@ class ToolInterface:
 
 if __name__ == "__main__":
     #try:
-    app = ToolInterface()
+    app = ToolInterface(cam_min = CAM_MIN, cam_max = CAM_MAX)
     app.run()
     #except Exception as e:
         #print(f"Critical error: {e}")
