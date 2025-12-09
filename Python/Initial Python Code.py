@@ -116,7 +116,7 @@ class StepperController:
                 time.sleep(self.step_delay)
 
 class ActuatorController:
-    def __init__(self, stepper1_pins, stepper2_pins, step_sequence, steps_per_rev, gear_ratio, cam_min, cam_max):
+    def __init__(self, stepper1_pins, stepper2_pins, step_sequence, steps_per_rev, gear_ratio):#, cam_min, cam_max):
         # Each actuator now has two vertical stepper motors
         self.stepper1_pins = stepper1_pins
         self.stepper2_pins = stepper2_pins
@@ -340,14 +340,14 @@ class CustomThread(Thread):
         return self._return
 
 class ToolInterface:
-    def __init__(self, cam_min, cam_max):
+    def __init__(self, cam_min):#, cam_max):
         self.window = tk.Tk()
         self.window.title("Tool Imaging Station")
         self.align_bool = False
         self.move_threadu = None
         self.move_threadd = None
         self.up_stat = True
-        # self.cam_min = cam_min
+        self.cam_min = cam_min
         # self.cam_max = cam_max
         # self.top = True # assume at top
         # self.bottom = False
@@ -370,9 +370,9 @@ class ToolInterface:
                 stepper2_pins=[VERT_STP2_BLACK, VERT_STP2_GREEN, VERT_STP2_RED, VERT_STP2_BLUE],
             step_sequence=STEP_SEQ,
             steps_per_rev=STEPS_PER_REVOLUTION,
-            gear_ratio=GEAR_RATIO,
-            cam_min = CAM_MIN,
-            cam_max = CAM_MAX,
+            gear_ratio=GEAR_RATIO#,
+            #cam_min = CAM_MIN,
+            #cam_max = CAM_MAX,
         )
         self.cameras = MicroscopeManager(CAMERA_INDICES)
 
@@ -452,8 +452,8 @@ class ToolInterface:
             result = self.move_threadu.join()
             print(result)
             CAM_YPOS -= result
-            # if CAM_YPOS <= self.cam_min: 
-            #     CAM_YPOS = self.cam_min
+            if CAM_YPOS <= self.cam_min: 
+                CAM_YPOS = self.cam_min
             #     self.top = True
             print("Returned:", CAM_YPOS, ",", result)            
             self.align_bool = False
@@ -594,7 +594,7 @@ class ToolInterface:
 
 if __name__ == "__main__":
     #try:
-    app = ToolInterface(cam_min = CAM_MIN, cam_max = CAM_MAX)
+    app = ToolInterface(cam_min = CAM_MIN)#, cam_max = CAM_MAX)
     app.run()
     #except Exception as e:
         #print(f"Critical error: {e}")
