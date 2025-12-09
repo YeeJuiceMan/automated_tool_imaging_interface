@@ -347,10 +347,10 @@ class ToolInterface:
         self.move_threadu = None
         self.move_threadd = None
         self.up_stat = True
-        self.cam_min = cam_min
-        self.cam_max = cam_max
-        self.top = True # assume at top
-        self.bottom = False
+        # self.cam_min = cam_min
+        # self.cam_max = cam_max
+        # self.top = True # assume at top
+        # self.bottom = False
 
         # set up GPIO
         if RUNNING_ON_RASPBERRY_PI:
@@ -424,12 +424,15 @@ class ToolInterface:
         self.alignd_button = tk.Button(self.window, text="Align Down", command=self.align_down)
         self.alignd_button.grid(row=4, column=3, padx=1, pady=10)
 
+        self.set_top = tk.Button(self.window, text=" Set Top", command=self.set_top)
+        self.set_top.grid(row=4, column=3, padx=1, pady=10)
+
         self.exit_button = tk.Button(self.window, text="Exit", command=self.cleanup_and_exit)
         self.exit_button.grid(row=4, column=5, padx=1, pady=10)
 
     def align_up(self):
         global CAM_YPOS
-        if not self.align_bool and CAM_YPOS >= self.cam_min and not self.top:
+        if not self.align_bool:# and CAM_YPOS >= self.cam_min and not self.top:
             # Start retracting in background thread
             self.bottom = False
             self.move_threadu = CustomThread(
@@ -443,7 +446,7 @@ class ToolInterface:
             self.up_stat = True
             self.alignu_button.config(text="STOP Align Up")
 
-        elif self.up_stat and not self.top: #only disable motor when moving UP
+        elif self.up_stat:# and not self.top: #only disable motor when moving UP
             # Second press → stop
             self.actuator.stop_flag = True    # tell actuator to stop
             result = self.move_threadu.join()
@@ -458,7 +461,7 @@ class ToolInterface:
 
     def align_down(self):
         global CAM_YPOS
-        if not self.align_bool and CAM_YPOS <= self.cam_max and not self.bottom:
+        if not self.align_bool:# and CAM_YPOS <= self.cam_max and not self.bottom:
             self.top = False
         # Start retracting in background thread
             self.move_threadd = CustomThread(
@@ -472,7 +475,7 @@ class ToolInterface:
             self.up_stat = False
             self.alignd_button.config(text="STOP Align Down")
 
-        elif not self.up_stat and not self.bottom: # only disable motor when moving DOWN
+        elif not self.up_stat:# and not self.bottom: # only disable motor when moving DOWN
             # Second press → stop
             self.actuator.stop_flag = True    # tell actuator to stop
             result = self.move_threadd.join()
@@ -484,6 +487,11 @@ class ToolInterface:
             print("Returned:", CAM_YPOS, ",", result)            
             self.align_bool = False
             self.alignd_button.config(text="Align Down")
+
+    def set_top(self): # sets the 0 position (manual)
+        global CAM_YPOS
+        CAM_YPOS = 0
+        self.update_status("Current position set as top.")
 
     def bit_top(self): # will save in folder in the future
         global CAM_BIT_TOP_POS, CAM_YPOS
