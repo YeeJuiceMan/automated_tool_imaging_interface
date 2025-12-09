@@ -67,8 +67,8 @@ else:
 os.makedirs(BASE_DIR, exist_ok=True)
 
 # Current position of camera (top is 0)
-CAM_YPOS = 0
-CAM_BIT_TOP_POS = 0
+global CAM_YPOS = 0
+global CAM_BIT_TOP_POS = 0
 
 if not RUNNING_ON_RASPBERRY_PI:
     class DummyGPIO:
