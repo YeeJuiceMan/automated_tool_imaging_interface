@@ -1,4 +1,5 @@
 
+
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk
@@ -272,7 +273,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
 
 
         all_file_paths = []
-        actuator.extend(80)
+        #actuator.extend(80)
         #actuator.extend(400)
         '''for _ in range (50):
             actuator.retract(400)
@@ -282,7 +283,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
         #actuator.retract(200)
         #actuator.retract(800)
         time.sleep(0.5)
-        #actuator.extend(800)
+        actuator.extend(940)
         # initial positioning by starting with tool fully down
        
         # wait for stability 
@@ -299,6 +300,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
            # time.sleep(0.5)
 
             # capture images from all cameras
+        
             image_paths = cameras.capture_images(tool_number, flute_number, layer_number, current_angle)
             all_file_paths.extend(image_paths)
 
