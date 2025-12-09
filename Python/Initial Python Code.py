@@ -126,7 +126,7 @@ class ActuatorController:
         self.step_sequence = step_sequence
         self.steps_per_rev = steps_per_rev
         self.gear_ratio = gear_ratio
-        self.step_delay = 0.001
+        self.step_delay = 0.00005
         self.stop_flag = False
         #self.cam_min = cam_min
         #self.cam_max = cam_max
