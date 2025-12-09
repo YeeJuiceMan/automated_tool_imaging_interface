@@ -11,6 +11,13 @@ import RPi.GPIO as GPIO
 from threading import Thread
 import threading
 
+# check overrotation
+# layer number based on input
+# check top left usb cam for focus
+# change save directory to Desktop (/home/.../Desktop)
+# (if you can) save config for each drill bit tool number
+#height layer thing
+
 # Hardware control flag (False for Windows) so set true on raspberry pi
 RUNNING_ON_RASPBERRY_PI = True
 AUTO_START = False
@@ -279,7 +286,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
     try:
         # calculate angle increment for 20 positions by 360 degrees / 20 positions = 18 degrees per step
         global CAM_YPOS
-        angle_increment = 100/(int(flute_number))
+        angle_increment = 95/(int(flute_number))
 
         all_file_paths = []
         
@@ -502,9 +509,7 @@ class ToolInterface:
             result = self.move_threadd.join()
             print(result)
             CAM_YPOS += result
-            # if CAM_YPOS >= self.cam_max:
-            #     CAM_YPOS = self.cam_max
-            #     self.bottom = True
+            
             print("Returned:", CAM_YPOS, ",", result)            
             self.align_bool = False
             self.alignd_button.config(text="Align Down")
@@ -548,8 +553,6 @@ class ToolInterface:
 
             # start imaging in a separate thread
             self.update_status("Imaging process started...")
-            global CAM_YPOS
-            CAM_YPOS = 0
             thread = threading.Thread(target=self.run_imaging_sequence, args=(tool_number, flute_number, layer_number))
             thread.daemon = True
             thread.start()
