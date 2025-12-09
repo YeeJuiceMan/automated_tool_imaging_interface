@@ -66,7 +66,7 @@ else:
 os.makedirs(BASE_DIR, exist_ok=True)
 
 # Current position of camera (top is 0)
-CAM_YPOS = 940
+CAM_YPOS = 0
 CAM_BIT_TOP_POS = 0
 CAM_MIN = 0
 CAM_MAX = 940
@@ -173,11 +173,15 @@ class ActuatorController:
 
     def extend(self, degrees=90):
         #Raise tool holder (both steppers move upward).
+        global CAM_YPOS
+        if CAM_YPOS == self.cam_min: return 0
         self.stop_flag = False
         return self.move(degrees, upward=True)
 
     def retract(self, degrees=90):
         #Lower tool holder (both steppers move downward).
+        global CAM_YPOS
+        if CAM_YPOS == self.cam_max: return 0
         self.stop_flag = False
         return self.move(degrees, upward=False)
 
@@ -424,7 +428,7 @@ class ToolInterface:
 
     def align_up(self):
         global CAM_YPOS
-        if not self.align_bool:
+        if not self.align_bool and CAM_YPOS > self.cam_min:
             # Start retracting in background thread
             self.move_threadu = CustomThread(
                 target=self.actuator.retract,
@@ -450,7 +454,7 @@ class ToolInterface:
 
     def align_down(self):
         global CAM_YPOS
-        if not self.align_bool:
+        if not self.align_bool and CAM_YPOS < self.cam_max:
         # Start retracting in background thread
             self.move_threadd = CustomThread(
                 target=self.actuator.extend,
