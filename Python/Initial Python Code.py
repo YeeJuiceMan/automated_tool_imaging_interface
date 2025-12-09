@@ -284,6 +284,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
           
             for position in range(int(flute_number)):
                 current_angle += 180/int(flute_number)
+                current_height = x
                
                 # capture images from all cameras
             
