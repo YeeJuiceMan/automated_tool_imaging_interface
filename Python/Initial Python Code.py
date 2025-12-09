@@ -463,7 +463,7 @@ class ToolInterface:
             self.align_bool = True
             self.up_stat = True
             self.alignu_button.config(text="STOP Align Up")
-            self.has_aligned_up = True 
+            
 
         elif self.up_stat:# and not self.top: #only disable motor when moving UP
             # Second press → stop
@@ -477,6 +477,7 @@ class ToolInterface:
             print("Returned:", CAM_YPOS, ",", result)            
             self.align_bool = False
             self.alignu_button.config(text="Align Up")
+            self.has_aligned_up = True 
 
     def align_down(self):
         global CAM_YPOS
