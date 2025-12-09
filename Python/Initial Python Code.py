@@ -365,6 +365,7 @@ class ToolInterface:
         self.move_threadd = None
         self.up_stat = True
         self.cam_min = cam_min
+        self.has_aligned_up = False 
         # self.cam_max = cam_max
         # self.top = True # assume at top
         # self.bottom = False
@@ -462,6 +463,7 @@ class ToolInterface:
             self.align_bool = True
             self.up_stat = True
             self.alignu_button.config(text="STOP Align Up")
+            self.has_aligned_up = True 
 
         elif self.up_stat:# and not self.top: #only disable motor when moving UP
             # Second press → stop
@@ -524,6 +526,10 @@ class ToolInterface:
     def start_process(self):
         # start the imaging process in a separate thread
         try:
+            if not self.has_aligned_up:
+                messagebox.showwarning("Warning", "Please click 'Align Up' before starting imaging.")
+            return
+            
             # validate inputs
             tool_number = self.tool_number.get().strip()
             flute_number = self.flute_number.get().strip()
@@ -534,6 +540,7 @@ class ToolInterface:
             if not tool_number or not flute_number or not layer_number:
                 messagebox.showerror("Error", "All fields are required!")
                 return
+                
 
             # disable start button to prevent multiple runs
             self.start_button.config(state=tk.DISABLED)
