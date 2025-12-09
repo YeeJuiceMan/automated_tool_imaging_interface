@@ -289,7 +289,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
        
         # wait for stability 
         time.sleep(0.5)
-
+        actuator.retract(40)
         # go through 20 positions
         for position in range(int(flute_number)*3):
             current_angle = position * angle_increment
@@ -314,6 +314,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
             stepper.rotate_degrees(angle_increment)
                 #wait
             time.sleep(0.3)
+            actuator.retract(20)
             #attempt to do go back
            
 
