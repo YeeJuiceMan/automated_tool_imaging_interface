@@ -258,6 +258,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
 
 
         all_file_paths = []
+        actuator.extend(10)
         #actuator.extend(400)
         '''for _ in range (50):
             actuator.retract(400)
