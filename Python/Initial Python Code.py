@@ -9,6 +9,7 @@ from datetime import datetime
 import threading
 import RPi.GPIO as GPIO
 import pigpio #for up down motors more accurate timing
+from threading import Thread
 
 # Hardware control flag (False for Windows) so set true on raspberry pi
 RUNNING_ON_RASPBERRY_PI = True
@@ -65,6 +66,9 @@ else:
 # Create base directory (if non existant)
 os.makedirs(BASE_DIR, exist_ok=True)
 
+# Current position of camera (top is 0)
+CAM_YPOS = 0
+CAM_BIT_TOP_POS = 0
 
 if not RUNNING_ON_RASPBERRY_PI:
     class DummyGPIO:
@@ -155,20 +159,18 @@ class ActuatorController:
             else:
                 self.stop()
                 break
-        return 0
+        return int(round((step_count / (self.steps_per_rev * self.gear_ratio)) * 360))
 
 
     def extend(self, degrees=90):
         #Raise tool holder (both steppers move upward).
         self.stop_flag = False
-        self.move(degrees, upward=True)
-        return 0
+        return self.move(degrees, upward=True)
 
     def retract(self, degrees=90):
         #Lower tool holder (both steppers move downward).
         self.stop_flag = False
-        self.move(degrees, upward=False)
-        return 0
+        return self.move(degrees, upward=False)
 
     def stop(self):
         #Disable all coils.
@@ -310,6 +312,21 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
         print(f"Error during capture sequence: {e}")
         raise e
 
+class CustomThread(Thread):
+    def __init__(self, group=None, target=None, name=None, args=(), kwargs={}, verbose=None):
+        # Initializing the Thread class
+        super().__init__(group, target, name, args, kwargs)
+        self._return = None
+
+    # Overriding the Thread.run function
+    def run(self):
+        if self._target is not None:
+            self._return = self._target(*self._args, **self._kwargs)
+
+    def join(self):
+        super().join()
+        return self._return
+
 class ToolInterface:
     def __init__(self):
         self.window = tk.Tk()
@@ -351,9 +368,9 @@ class ToolInterface:
         tk.Label(self.window, text="Tool Number:").grid(row=0, column=0, sticky="w", padx=5, pady=5)
         tk.Label(self.window, text="Flute Number:").grid(row=1, column=0, sticky="w", padx=5, pady=5)
         tk.Label(self.window, text="Layer Number:").grid(row=2, column=0, sticky="w", padx=5, pady=5)
+        tk.Label(self.window, text="Height to Check:").grid(row=2, column=0, sticky="w", padx=5, pady=5)
         tk.Label(self.window, text="Color:").grid(row=3, column=0, sticky="w", padx=5, pady=5)
         
-
         self.tool_number = tk.Entry(self.window)
         self.flute_number = tk.Entry(self.window)
         self.layer_number = tk.Entry(self.window)
@@ -380,20 +397,25 @@ class ToolInterface:
         self.start_button = tk.Button(self.window, text="Start Imaging", command=self.start_process)
         self.start_button.grid(row=4, column=0, padx=1, pady=10)
 
+        self.top_bit_button = tk.Button(self.window, text="Set Bit Top", command=self.bit_top)
+        self.top_bit_button.grid(row=4, column=1, padx=1, pady=10)
+
         self.alignu_button = tk.Button(self.window, text="Align Up", command=self.align_up)
-        self.alignu_button.grid(row=4, column=1, padx=1, pady=10)
+        self.alignu_button.grid(row=4, column=2, padx=1, pady=10)
 
         self.alignd_button = tk.Button(self.window, text="Align Down", command=self.align_down)
-        self.alignd_button.grid(row=4, column=2, padx=1, pady=10)
+        self.alignd_button.grid(row=4, column=3, padx=1, pady=10)
 
         self.exit_button = tk.Button(self.window, text="Exit", command=self.cleanup_and_exit)
-        self.exit_button.grid(row=4, column=3, padx=1, pady=10)
+        self.exit_button.grid(row=4, column=4, padx=1, pady=10)
 
     def align_up(self):
         if not self.align_bool:
-        # Start retracting in background thread
-            self.move_threadu = threading.Thread(
-                target=self.actuator.retract, args=(2000,), daemon=True
+            # Start retracting in background thread
+            self.move_threadu = CustomThread(
+                target=self.actuator.retract,
+                args=(2000,),
+                daemon=True
             )
             self.move_threadu.start()
 
@@ -404,14 +426,19 @@ class ToolInterface:
         elif self.up_stat: #only disable motor when moving UP
             # Second press → stop
             self.actuator.stop_flag = True    # tell actuator to stop
+            result = self.move_threadu.join()
+            CAM_YPOS -= result
+            print("Returned:", result, ", ", CAM_YPOS)            
             self.align_bool = False
             self.alignu_button.config(text="Align Up")
 
     def align_down(self):
         if not self.align_bool:
         # Start retracting in background thread
-            self.move_threadd = threading.Thread(
-                target=self.actuator.extend, args=(2000,), daemon=True
+            self.move_threadd = CustomThread(
+                target=self.actuator.extend,
+                args=(2000,),
+                daemon=True
             )
             self.move_threadd.start()
 
@@ -422,8 +449,15 @@ class ToolInterface:
         elif not self.up_stat: # only disable motor when moving DOWN
             # Second press → stop
             self.actuator.stop_flag = True    # tell actuator to stop
+            result = self.move_threadd.join()
+            CAM_YPOS += result
+            print("Returned:", result, ", ", CAM_YPOS)   
             self.align_bool = False
             self.alignd_button.config(text="Align Down")
+
+    def bit_top(self): # will save in folder in the future
+        CAM_BIT_TOP_POS = CAM_YPOS
+        self.update_status("Top Position Saved!")
 
     def update_status(self, message):
         # update status display
