@@ -535,6 +535,8 @@ class ToolInterface:
 
             # start imaging in a separate thread
             self.update_status("Imaging process started...")
+            global CAM_YPOS
+            CAM_YPOS = 0
             thread = threading.Thread(target=self.run_imaging_sequence, args=(tool_number, flute_number, layer_number))
             thread.daemon = True
             thread.start()
