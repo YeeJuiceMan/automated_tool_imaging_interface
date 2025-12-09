@@ -361,12 +361,12 @@ class ToolInterface:
         self.color = tk.StringVar(value="Select Color")  # default display text
         self.color_dropdown = ttk.Combobox(self.window, textvariable=self.color, values=["Silver", "Black", "Gold"],state="readonly" )
         
-        self.tool_number.grid(row=0, column=1, padx=5, pady=5, columnspan=2)
-        self.flute_number.grid(row=1, column=1, padx=5, pady=5, columnspan=2)
-        self.layer_number.grid(row=2, column=1, padx=5, pady=5, columnspan=2)
-        self.height.grid(row=3, column=1, padx=5, pady=5, columnspan=2)
+        self.tool_number.grid(row=0, column=1, padx=5, pady=5, columnspan=3)
+        self.flute_number.grid(row=1, column=1, padx=5, pady=5, columnspan=3)
+        self.layer_number.grid(row=2, column=1, padx=5, pady=5, columnspan=3)
+        self.height.grid(row=3, column=1, padx=5, pady=5, columnspan=3)
 
-        self.color_dropdown.grid(row=3, column=1, padx=5, pady=5, columnspan=2)
+        self.color_dropdown.grid(row=3, column=1, padx=5, pady=5, columnspan=3)
 
         # status display
         self.status_text = tk.StringVar()
