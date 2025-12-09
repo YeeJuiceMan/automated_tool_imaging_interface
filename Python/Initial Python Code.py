@@ -14,6 +14,7 @@ import threading
 # Hardware control flag (False for Windows) so set true on raspberry pi
 RUNNING_ON_RASPBERRY_PI = True
 AUTO_START = False
+ALIGN_UP = False
 # Where the images are stored, changes depending on where you are storing it (this is an example)
 
 CANNY_THRESHOLD1 = 100  # Lower threshold for edge detection
@@ -291,7 +292,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
         time.sleep(0.5)
         actuator.retract(40)
         # go through 20 positions
-        for x in range(20):
+        for x in range(5):
             for position in range(int(flute_number)*3):
                 current_angle = position * angle_increment
                 #print(f"\nCapturing at position {position+1}/20 ({current_angle}°)")
@@ -323,7 +324,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
             #actuator.retract(400)
             for position in range(int(flute_number)*3):
                 stepper.rotate_degrees(angle_increment, False)
-                actuator.retract(20)
+            actuator.retract(20)
         return all_file_paths
 
     except Exception as e:
