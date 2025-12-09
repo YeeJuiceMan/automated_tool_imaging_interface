@@ -1,15 +1,14 @@
 
 import tkinter as tk
-from tkinter import messagebox
-from tkinter import ttk
+from tk import messagebox
+from tk import ttk
 import os
 import cv2
 import time
-from datetime import datetime
-import threading
+import datetime
 import RPi.GPIO as GPIO
-import pigpio #for up down motors more accurate timing
 from threading import Thread
+import json
 
 # Hardware control flag (False for Windows) so set true on raspberry pi
 RUNNING_ON_RASPBERRY_PI = True
@@ -430,7 +429,7 @@ class ToolInterface:
             result = self.move_threadu.join()
             print(result)
             CAM_YPOS -= result
-            print("Returned:", result, ", ", CAM_YPOS)            
+            print("Returned:", CAM_YPOS, ",", result)            
             self.align_bool = False
             self.alignu_button.config(text="Align Up")
 
@@ -455,13 +454,15 @@ class ToolInterface:
             result = self.move_threadd.join()
             print(result)
             CAM_YPOS += result
-            print("Returned:", result, ", ", CAM_YPOS)   
+            if CAM_YPOS < 0: CAM_YPOS = 0
+            print("Returned:", CAM_YPOS, ",", result)            
             self.align_bool = False
             self.alignd_button.config(text="Align Down")
 
     def bit_top(self): # will save in folder in the future
+        global CAM_BIT_TOP_POS, CAM_YPOS
         CAM_BIT_TOP_POS = CAM_YPOS
-        self.update_status("Top Position Saved!")
+        self.update_status("Top Position Saved:", CAM_BIT_TOP_POS)
 
     def update_status(self, message):
         # update status display
