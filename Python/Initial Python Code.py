@@ -160,14 +160,14 @@ class ActuatorController:
                         #print(self.stepper1_pins[pin], self.stepper2_pins[pin], step[pin])
                     time.sleep(self.step_delay)
                     step_count += 1
-                    degree_count = int(round((step_count / (self.steps_per_rev * self.gear_ratio)) * 90))
-                    if (upward and CAM_YPOS - degree_count <= self.cam_min) or (not upward and CAM_YPOS + degree_count >= self.cam_max):
-                        self.stop()
-                        break
+                    # degree_count = int(round((step_count / (self.steps_per_rev * self.gear_ratio)) * 90))
+                    # if (upward and CAM_YPOS - degree_count <= self.cam_min) or (not upward and CAM_YPOS + degree_count >= self.cam_max):
+                    #     self.stop()
+                    #     break
             else:
                 self.stop()
-                degree_count = int(round((step_count / (self.steps_per_rev * self.gear_ratio)) * 90))
                 break
+        degree_count = int(round((step_count / (self.steps_per_rev * self.gear_ratio)) * 90))
         return degree_count
 
 
