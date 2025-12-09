@@ -415,7 +415,7 @@ class ToolInterface:
             self.move_threadu = CustomThread(
                 target=self.actuator.retract,
                 args=(2000,),
-                daemon=True
+                #daemon=True
             )
             self.move_threadu.start()
 
@@ -438,7 +438,7 @@ class ToolInterface:
             self.move_threadd = CustomThread(
                 target=self.actuator.extend,
                 args=(2000,),
-                daemon=True
+                #daemon=True
             )
             self.move_threadd.start()
 
