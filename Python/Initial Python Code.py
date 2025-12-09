@@ -11,9 +11,7 @@ import RPi.GPIO as GPIO
 from threading import Thread
 import threading
 
-# layer number based on input
-# check top left usb cam for focus
-#height layer thing
+
 
 # Hardware control flag (False for Windows) so set true on raspberry pi
 RUNNING_ON_RASPBERRY_PI = True
@@ -225,7 +223,7 @@ class MicroscopeManager:
         file_paths = []
 
         # position names for the cameras
-        positions = ["top", "side", "interior"]
+        positions = ["top", "side1", "side2"]
         
         if camera_num is not None:
             if camera_num < len(self.cameras):
@@ -243,7 +241,7 @@ class MicroscopeManager:
                
                 # "T# FL# OD L# M/AP"
                 
-                file_name = f"{datetime.now().strftime('%Y-%m-%d')}_L{height}_{positions[i]}_{position}deg.jpg"
+                file_name = f"{datetime.now().strftime('%Y-%m-%d')}_L{height}_{positions[i]}_{int(position)}deg.jpg"
                 file_path = os.path.join(folder_path, file_name)
 
                 # save the image
@@ -283,7 +281,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
             cam_height -= actuator.retract(200/int(layer_number))
           
             for position in range(int(flute_number)):
-                current_angle = position * angle_increment 
+                current_angle = 180/position
                 current_height = x
                 # capture images from all cameras
             
