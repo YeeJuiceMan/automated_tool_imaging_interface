@@ -8,7 +8,7 @@ import cv2
 import time
 import datetime
 import RPi.GPIO as GPIO
-from threading import Thread
+from threading import Threading
 
 # Hardware control flag (False for Windows) so set true on raspberry pi
 RUNNING_ON_RASPBERRY_PI = True
