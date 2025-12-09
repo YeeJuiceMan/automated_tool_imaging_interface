@@ -159,7 +159,7 @@ class ActuatorController:
             else:
                 self.stop()
                 break
-        return int(round((step_count / (self.steps_per_rev * self.gear_ratio)) * 360))
+        return int(round((step_count / (self.steps_per_rev * self.gear_ratio)) * 90))
 
 
     def extend(self, degrees=90):
