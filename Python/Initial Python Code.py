@@ -336,9 +336,6 @@ class ToolInterface:
         self.move_threadd = None
         self.up_stat = True
 
-        global CAM_YPOS
-        global CAM_BIT_TOP_POS
-
         # set up GPIO
         if RUNNING_ON_RASPBERRY_PI:
             setup_gpio()
@@ -413,6 +410,7 @@ class ToolInterface:
         self.exit_button.grid(row=4, column=4, padx=1, pady=10)
 
     def align_up(self):
+        global CAM_YPOS
         if not self.align_bool:
             # Start retracting in background thread
             self.move_threadu = CustomThread(
@@ -437,6 +435,7 @@ class ToolInterface:
             self.alignu_button.config(text="Align Up")
 
     def align_down(self):
+        global CAM_YPOS
         if not self.align_bool:
         # Start retracting in background thread
             self.move_threadd = CustomThread(
