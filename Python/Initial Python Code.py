@@ -297,7 +297,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
         for x in range(5):
             cam_height -= actuator.retract(40)
             print(cam_height)
-            for position in range(int(flute_number)*3):
+            for position in range(int(flute_number)):
                 current_angle = position * angle_increment 
                 current_height = x
                 #print(f"\nCapturing at position {position+1}/20 ({current_angle}°)")
@@ -330,7 +330,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
 
             #print(f"\nCapture sequence completed. Total images: {len(all_file_paths)}")
             #actuator.retract(400)
-            for position in range(int(flute_number)*3):
+            for position in range(int(flute_number)):
                 stepper.rotate_degrees(angle_increment, False)
         cam_height -= actuator.retract(cam_height)
         print(cam_height)    
