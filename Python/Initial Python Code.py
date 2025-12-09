@@ -386,8 +386,8 @@ class ToolInterface:
         tk.Label(self.window, text="Tool Number:").grid(row=0, column=0, sticky="w", padx=5, pady=5)
         tk.Label(self.window, text="Flute Number:").grid(row=1, column=0, sticky="w", padx=5, pady=5)
         tk.Label(self.window, text="Layer Number:").grid(row=2, column=0, sticky="w", padx=5, pady=5)
-        tk.Label(self.window, text="Height to Check:").grid(row=2, column=0, sticky="w", padx=5, pady=5)
-        tk.Label(self.window, text="Color:").grid(row=3, column=0, sticky="w", padx=5, pady=5)
+        tk.Label(self.window, text="Height to Check:").grid(row=3, column=0, sticky="w", padx=5, pady=5)
+        tk.Label(self.window, text="Color:").grid(row=4, column=0, sticky="w", padx=5, pady=5)
         
         self.tool_number = tk.Entry(self.window)
         self.flute_number = tk.Entry(self.window)
