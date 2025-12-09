@@ -401,7 +401,7 @@ class ToolInterface:
         self.layer_number.grid(row=2, column=1, padx=5, pady=5, columnspan=4)
         self.height.grid(row=3, column=1, padx=5, pady=5, columnspan=4)
 
-        self.color_dropdown.grid(row=3, column=1, padx=5, pady=5, columnspan=4)
+        self.color_dropdown.grid(row=4, column=1, padx=5, pady=5, columnspan=4)
 
         # status display
         self.status_text = tk.StringVar()
@@ -409,26 +409,26 @@ class ToolInterface:
         self.status_label = tk.Label(self.window, textvariable=self.status_text,
                                     bd=1, relief=tk.SUNKEN, anchor=tk.W)
         # ew is parameter in Tinker GUI ew aligns the widget to both left and right edges, making it stretch horizontally across its grid cell
-        self.status_label.grid(row=5, column=0, columnspan=4, sticky="ew", padx=0, pady=0)
+        self.status_label.grid(row=6, column=0, columnspan=4, sticky="ew", padx=0, pady=0)
 
         # control buttons
         self.start_button = tk.Button(self.window, text="Start Imaging", command=self.start_process)
-        self.start_button.grid(row=4, column=0, padx=1, pady=10)
+        self.start_button.grid(row=5, column=0, padx=1, pady=10)
 
         self.top_bit_button = tk.Button(self.window, text="Set Bit Top", command=self.bit_top)
-        self.top_bit_button.grid(row=4, column=1, padx=1, pady=10)
+        self.top_bit_button.grid(row=5, column=1, padx=1, pady=10)
 
         self.alignu_button = tk.Button(self.window, text="Align Up", command=self.align_up)
-        self.alignu_button.grid(row=4, column=2, padx=1, pady=10)
+        self.alignu_button.grid(row=5, column=2, padx=1, pady=10)
 
         self.alignd_button = tk.Button(self.window, text="Align Down", command=self.align_down)
-        self.alignd_button.grid(row=4, column=3, padx=1, pady=10)
+        self.alignd_button.grid(row=5, column=3, padx=1, pady=10)
 
         self.set_top = tk.Button(self.window, text=" Set Top", command=self.set_top)
-        self.set_top.grid(row=4, column=4, padx=1, pady=10)
+        self.set_top.grid(row=5, column=4, padx=1, pady=10)
 
         self.exit_button = tk.Button(self.window, text="Exit", command=self.cleanup_and_exit)
-        self.exit_button.grid(row=4, column=5, padx=1, pady=10)
+        self.exit_button.grid(row=5, column=5, padx=1, pady=10)
 
     def align_up(self):
         global CAM_YPOS
