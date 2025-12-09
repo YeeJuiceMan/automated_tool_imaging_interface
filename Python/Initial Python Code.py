@@ -291,37 +291,39 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
         time.sleep(0.5)
         actuator.retract(40)
         # go through 20 positions
-        for position in range(int(flute_number)*3):
-            current_angle = position * angle_increment
-            #print(f"\nCapturing at position {position+1}/20 ({current_angle}°)")
+        for x in range(20):
+            for position in range(int(flute_number)*3):
+                current_angle = position * angle_increment
+                #print(f"\nCapturing at position {position+1}/20 ({current_angle}°)")
 
-            # move to the measurement position and move the tool to camera view position
-          
-            # wait for stability
-           # time.sleep(0.5)
-
-            # capture images from all cameras
-        
-            image_paths = cameras.capture_images(tool_number, flute_number, layer_number, current_angle)
-            all_file_paths.extend(image_paths)
-
-            # move back down
-           
-           # time.sleep(0.5)
-
-            # rotate to next position if not the last one
+                # move to the measurement position and move the tool to camera view position
             
-            stepper.rotate_degrees(angle_increment)
-                #wait
-            time.sleep(0.3)
-            actuator.retract(20)
-            #attempt to do go back
-           
+                # wait for stability
+            # time.sleep(0.5)
 
-        #print(f"\nCapture sequence completed. Total images: {len(all_file_paths)}")
-        #actuator.retract(400)
-        for position in range(int(flute_number)*3):
-         stepper.rotate_degrees(angle_increment, False)
+                # capture images from all cameras
+            
+                image_paths = cameras.capture_images(tool_number, flute_number, layer_number, current_angle)
+                all_file_paths.extend(image_paths)
+
+                # move back down
+            
+            # time.sleep(0.5)
+
+                # rotate to next position if not the last one
+                
+                stepper.rotate_degrees(angle_increment)
+                    #wait
+                time.sleep(0.3)
+                
+                #attempt to do go back
+            
+
+            #print(f"\nCapture sequence completed. Total images: {len(all_file_paths)}")
+            #actuator.retract(400)
+            for position in range(int(flute_number)*3):
+                stepper.rotate_degrees(angle_increment, False)
+                actuator.retract(20)
         return all_file_paths
 
     except Exception as e:
