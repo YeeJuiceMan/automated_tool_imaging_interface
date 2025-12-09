@@ -259,15 +259,15 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
 
         all_file_paths = []
         actuator.extend(400)
-        for _ in range (50):
+        '''for _ in range (50):
             actuator.retract(400)
             time.sleep(3)
             actuator.extend(400)
-            time.sleep(3)
+            time.sleep(3)'''
         #actuator.retract(200)
         #actuator.retract(800)
         time.sleep(0.5)
-        actuator.extend(800)
+        #actuator.extend(800)
         # initial positioning by starting with tool fully down
        
         # wait for stability 
@@ -303,7 +303,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
                 time.sleep(0.3)
 
         #print(f"\nCapture sequence completed. Total images: {len(all_file_paths)}")
-        actuator.retract(800)
+        actuator.retract(400)
         return all_file_paths
 
     except Exception as e:
