@@ -274,7 +274,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
         time.sleep(0.5)
 
         # go through 20 positions
-        for position in range(int(flute_number)+1):
+        for position in range(int(flute_number)):
             current_angle = position * angle_increment
             #print(f"\nCapturing at position {position+1}/20 ({current_angle}°)")
 
