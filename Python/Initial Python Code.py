@@ -291,7 +291,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
         time.sleep(0.5)
         actuator.extend(920)
         # initial positioning by starting with tool fully down
-        image_paths = cameras.capture_images(tool_number, flute_number, layer_number, 0, current_angle, 0)
+        image_paths = cameras.capture_images(tool_number, flute_number, layer_number, 0, 0, 0)
         # wait for stability 
         time.sleep(0.5)
         # go through 20 positions
