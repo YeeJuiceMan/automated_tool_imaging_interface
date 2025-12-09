@@ -308,8 +308,8 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
 
                 # capture images from all cameras
             
+                image_paths = cameras.capture_images(tool_number, flute_number, layer_number, current_height, current_angle, 1)
                 image_paths = cameras.capture_images(tool_number, flute_number, layer_number, current_height, current_angle, 2)
-                image_paths = cameras.capture_images(tool_number, flute_number, layer_number, current_height, current_angle, 4)
 
                 all_file_paths.extend(image_paths)
 
