@@ -66,7 +66,7 @@ else:
 os.makedirs(BASE_DIR, exist_ok=True)
 
 # Current position of camera (top is 0)
-CAM_YPOS = 0
+CAM_YPOS = 940
 CAM_BIT_TOP_POS = 0
 CAM_MIN = 0
 CAM_MAX = 940
@@ -365,9 +365,9 @@ class ToolInterface:
                 stepper2_pins=[VERT_STP2_BLACK, VERT_STP2_GREEN, VERT_STP2_RED, VERT_STP2_BLUE],
             step_sequence=STEP_SEQ,
             steps_per_rev=STEPS_PER_REVOLUTION,
-            gear_ratio=GEAR_RATIO
-            cam_min = CAM_MIN
-            cam_max = CAM_MAX
+            gear_ratio=GEAR_RATIO,
+            cam_min = CAM_MIN,
+            cam_max = CAM_MAX,
         )
         self.cameras = MicroscopeManager(CAMERA_INDICES)
 
