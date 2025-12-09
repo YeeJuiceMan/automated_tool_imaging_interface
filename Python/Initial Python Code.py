@@ -349,6 +349,8 @@ class ToolInterface:
         self.up_stat = True
         self.cam_min = cam_min
         self.cam_max = cam_max
+        self.top = True # assume at top
+        self.bottom = False
 
         # set up GPIO
         if RUNNING_ON_RASPBERRY_PI:
@@ -427,8 +429,9 @@ class ToolInterface:
 
     def align_up(self):
         global CAM_YPOS
-        if not self.align_bool and CAM_YPOS >= self.cam_min:
+        if not self.align_bool and CAM_YPOS >= self.cam_min and not self.top:
             # Start retracting in background thread
+            self.bottom = False
             self.move_threadu = CustomThread(
                 target=self.actuator.retract,
                 args=(2000,),
@@ -446,14 +449,17 @@ class ToolInterface:
             result = self.move_threadu.join()
             print(result)
             CAM_YPOS -= result
-            if CAM_YPOS < self.cam_min: CAM_YPOS = self.cam_min
+            if CAM_YPOS <= self.cam_min: 
+                CAM_YPOS = self.cam_min
+                self.top = True
             print("Returned:", CAM_YPOS, ",", result)            
             self.align_bool = False
             self.alignu_button.config(text="Align Up")
 
     def align_down(self):
         global CAM_YPOS
-        if not self.align_bool and CAM_YPOS <= self.cam_max:
+        if not self.align_bool and CAM_YPOS <= self.cam_max and not self.bottom:
+            self.top = True
         # Start retracting in background thread
             self.move_threadd = CustomThread(
                 target=self.actuator.extend,
@@ -472,7 +478,9 @@ class ToolInterface:
             result = self.move_threadd.join()
             print(result)
             CAM_YPOS += result
-            if CAM_YPOS > self.cam_max: CAM_YPOS = self.cam_max
+            if CAM_YPOS >= self.cam_max:
+                CAM_YPOS = self.cam_max
+                self.bottom = True
             print("Returned:", CAM_YPOS, ",", result)            
             self.align_bool = False
             self.alignd_button.config(text="Align Down")
