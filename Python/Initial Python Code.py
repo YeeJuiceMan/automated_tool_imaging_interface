@@ -11,11 +11,8 @@ import RPi.GPIO as GPIO
 from threading import Thread
 import threading
 
-
 # layer number based on input
 # check top left usb cam for focus
-# change save directory to Desktop (/home/.../Desktop)
-# (if you can) save config for each drill bit tool number
 #height layer thing
 
 # Hardware control flag (False for Windows) so set true on raspberry pi
@@ -23,9 +20,6 @@ RUNNING_ON_RASPBERRY_PI = True
 AUTO_START = False
 ALIGN_UP = False
 # Where the images are stored, changes depending on where you are storing it (this is an example)
-
-CANNY_THRESHOLD1 = 100  # Lower threshold for edge detection
-CANNY_THRESHOLD2 = 200  # Upper threshold for edge detection
 
 # Hardware Configuration
 
@@ -135,14 +129,9 @@ class ActuatorController:
         self.gear_ratio = gear_ratio
         self.step_delay = 0.001
         self.stop_flag = False
-        #self.cam_min = cam_min
-        #self.cam_max = cam_max
         self.current_step = 0
 
     def move(self, degrees, upward=True):
-        global CAM_YPOS
-        print("Motor1 pins:", self.stepper1_pins)
-        print("Motor2 pins:", self.stepper2_pins)
         # Calculate how many steps to move
         steps = int((degrees / 360) * self.steps_per_rev * self.gear_ratio)
         sequence = self.step_sequence if upward else self.step_sequence[::-1]
@@ -178,16 +167,12 @@ class ActuatorController:
 
 
     def extend(self, degrees=90):
-        #Raise tool holder (both steppers move upward).
-        #global CAM_YPOS
-       
+        #Raise tool holder (both steppers move upward).    
         self.stop_flag = False
         return self.move(degrees, upward=True)
 
     def retract(self, degrees=90):
         #Lower tool holder (both steppers move downward).
-        #global CAM_YPOS
-        #if CAM_YPOS == self.cam_min: return 0
         self.stop_flag = False
         return self.move(degrees, upward=False)
 
@@ -253,7 +238,6 @@ class MicroscopeManager:
             # Take multiple frames to ensure good quality
             for _ in range(10):
                 ret, frame = camera.read()
-               # time.sleep(0.1)
 
             if ret:
                
@@ -279,10 +263,8 @@ class MicroscopeManager:
 
 
 def automated_capture_sequence(tool_number, flute_number, layer_number, cameras, actuator, stepper):
-    #run  the automated capture sequence to get 20 images per tool
+    #run  the automated capture sequence
     try:
-        # calculate angle increment for 20 positions by 360 degrees / 20 positions = 18 degrees per step
-        global CAM_YPOS
         angle_increment = 95/(int(flute_number))
 
         all_file_paths = []
@@ -290,54 +272,34 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
         time.sleep(0.5)
         cam_height = 0
         cam_height += actuator.extend(920)
-        print(cam_height)
        
         # initial positioning by starting with tool fully down
         image_paths = cameras.capture_images(tool_number, flute_number, layer_number, 0, 0, 0)
         all_file_paths.extend(image_paths)
         # wait for stability 
         time.sleep(0.5)
-        # go through 20 positions
-        for x in range(5):
-            cam_height -= actuator.retract(40)
-            print(cam_height)
+        # go through 
+        for x in range(int(layer_number)):
+            cam_height -= actuator.retract(200/int(layer_number))
+          
             for position in range(int(flute_number)):
                 current_angle = position * angle_increment 
                 current_height = x
-                #print(f"\nCapturing at position {position+1}/20 ({current_angle}°)")
-
-                # move to the measurement position and move the tool to camera view position
-            
-                # wait for stability
-            # time.sleep(0.5)
-
                 # capture images from all cameras
             
                 image_paths = cameras.capture_images(tool_number, flute_number, layer_number, current_height, current_angle, 1)
                 all_file_paths.extend(image_paths)
                 image_paths = cameras.capture_images(tool_number, flute_number, layer_number, current_height, current_angle, 2)
-
                 all_file_paths.extend(image_paths)
 
-                # move back down
-            
-            # time.sleep(0.5)
-
-                # rotate to next position if not the last one
-                
+                # rotate to next position             
                 stepper.rotate_degrees(angle_increment)
-                    #wait
+                #wait
                 time.sleep(0.3)
-                
-                #attempt to do go back
-            
-
-            #print(f"\nCapture sequence completed. Total images: {len(all_file_paths)}")
-            #actuator.retract(400)
+            #reverse    
             for position in range(int(flute_number)):
                 stepper.rotate_degrees(angle_increment, False)
-        cam_height -= actuator.retract(cam_height)
-        print(cam_height)    
+        cam_height -= actuator.retract(cam_height)   
         return all_file_paths
         
         
@@ -370,10 +332,7 @@ class ToolInterface:
         self.up_stat = True
         self.cam_min = cam_min
         self.has_aligned_up = False 
-        # self.cam_max = cam_max
-        # self.top = True # assume at top
-        # self.bottom = False
-
+      
         # set up GPIO
         if RUNNING_ON_RASPBERRY_PI:
             setup_gpio()
@@ -392,9 +351,7 @@ class ToolInterface:
                 stepper2_pins=[VERT_STP2_BLACK, VERT_STP2_GREEN, VERT_STP2_RED, VERT_STP2_BLUE],
             step_sequence=STEP_SEQ,
             steps_per_rev=STEPS_PER_REVOLUTION,
-            gear_ratio=GEAR_RATIO#,
-            #cam_min = CAM_MIN,
-            #cam_max = CAM_MAX,
+            gear_ratio=GEAR_RATIO
         )
         self.cameras = MicroscopeManager(CAMERA_INDICES)
 
@@ -473,12 +430,9 @@ class ToolInterface:
             # Second press → stop
             self.actuator.stop_flag = True    # tell actuator to stop
             result = self.move_threadu.join()
-            print(result)
             CAM_YPOS -= result
             if CAM_YPOS <= self.cam_min: 
-                CAM_YPOS = self.cam_min
-            #     self.top = True
-            print("Returned:", CAM_YPOS, ",", result)            
+                CAM_YPOS = self.cam_min           
             self.align_bool = False
             self.alignu_button.config(text="Align Up")
             self.has_aligned_up = True 
@@ -504,10 +458,10 @@ class ToolInterface:
             # Second press → stop
             self.actuator.stop_flag = True    # tell actuator to stop
             result = self.move_threadd.join()
-            print(result)
+            
             CAM_YPOS += result
             
-            print("Returned:", CAM_YPOS, ",", result)            
+                     
             self.align_bool = False
             self.alignd_button.config(text="Align Down")
 
