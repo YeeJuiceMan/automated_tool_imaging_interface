@@ -1,7 +1,7 @@
 
 import tkinter as tk
-from tk import messagebox
-from tk import ttk
+from tkinter import messagebox
+from tkinter import ttk
 import os
 import cv2
 import time
