@@ -301,7 +301,8 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
 
         #print(f"\nCapture sequence completed. Total images: {len(all_file_paths)}")
         #actuator.retract(400)
-        stepper.rotate_degrees(100, False)
+        for position in range(int(flute_number)):
+         stepper.rotate_degrees(angle_increment, False)
         return all_file_paths
 
     except Exception as e:
