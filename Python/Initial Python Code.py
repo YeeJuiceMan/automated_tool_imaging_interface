@@ -239,7 +239,11 @@ class MicroscopeManager:
         positions = ["top", "side", "interior"]
         
         if camera_num is not None:
-            cameras_to_use = [(camera_num, self.cameras[camera_num])]
+            if camera_num < len(self.cameras):
+                cameras_to_use = [(camera_num, self.cameras[camera_num])]
+            else:
+                print(f"Camera {camera_num} not initialized!")
+                return []
         else:
             cameras_to_use = list(enumerate(self.cameras))
         for i, camera in cameras_to_use:
@@ -297,6 +301,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
         time.sleep(0.5)
         # go through 20 positions
         for x in range(5):
+            actuator.retract(40)
             for position in range(int(flute_number)*3):
                 current_angle = position * angle_increment 
                 current_height = x
@@ -332,7 +337,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
             #actuator.retract(400)
             for position in range(int(flute_number)*3):
                 stepper.rotate_degrees(angle_increment, False)
-            actuator.retract(30)
+            
         return all_file_paths
 
     except Exception as e:
