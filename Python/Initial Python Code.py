@@ -225,7 +225,7 @@ class MicroscopeManager:
         if len(self.cameras) != len(self.camera_indices):
             print("WARNING: Not all cameras were initialized!")
 
-    def capture_images(self, tool_number, flute_number, layer_number, position):
+    def capture_images(self, tool_number, flute_number, layer_number, height, position):
         """Capture images from all cameras"""
         timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
         date_folder = datetime.now().strftime('%Y-%m-%d')
@@ -247,8 +247,8 @@ class MicroscopeManager:
             if ret:
                
                 # "T# FL# OD L# M/AP"
-                file_nameOld = f"T{tool_number}_FL{flute_number}_OD{layer_number}_{positions[i]}_{position}deg.jpg"
-                file_name = f"{datetime.now().strftime('%Y-%m-%d')}_{positions[i]}_{position}deg.jpg"
+                
+                file_name = f"{datetime.now().strftime('%Y-%m-%d')}_H{height}_{positions[i]}_{position}deg.jpg"
                 file_path = os.path.join(folder_path, file_name)
 
                 # save the image
@@ -304,7 +304,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
 
                 # capture images from all cameras
             
-                image_paths = cameras.capture_images(tool_number, flute_number, layer_number, current_angle, x)
+                image_paths = cameras.capture_images(tool_number, flute_number, layer_number, current_height, current_angle)
                 all_file_paths.extend(image_paths)
 
                 # move back down
