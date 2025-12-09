@@ -279,7 +279,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
     try:
         # calculate angle increment for 20 positions by 360 degrees / 20 positions = 18 degrees per step
         global CAM_YPOS
-        angle_increment = 100/(int(flute_number)*3)
+        angle_increment = 100/(int(flute_number))
 
         all_file_paths = []
         
