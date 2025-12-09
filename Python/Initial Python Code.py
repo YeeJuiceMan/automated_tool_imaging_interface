@@ -11,7 +11,7 @@ import RPi.GPIO as GPIO
 from threading import Thread
 import threading
 
-# check overrotation
+
 # layer number based on input
 # check top left usb cam for focus
 # change save directory to Desktop (/home/.../Desktop)
@@ -69,7 +69,7 @@ CAMERA_INDICES = [0, 2, 4]
 if not RUNNING_ON_RASPBERRY_PI:
     BASE_DIR = r"C:\Users\csmid\OneDrive - The Pennsylvania State University\Images"
 else:
-    BASE_DIR = "/home/seco-tools-capstone/Documents/automated_tool_imaging_interface/files"
+    BASE_DIR = "/home/seco-tools-capstone/Desktop"
 
 # Create base directory (if non existant)
 os.makedirs(BASE_DIR, exist_ok=True)
@@ -146,7 +146,7 @@ class ActuatorController:
         # Calculate how many steps to move
         steps = int((degrees / 360) * self.steps_per_rev * self.gear_ratio)
         sequence = self.step_sequence if upward else self.step_sequence[::-1]
-        print(sequence)
+       
         step_count = 0
         degree_count = 0
         for _ in range(steps):
@@ -166,13 +166,10 @@ class ActuatorController:
                         GPIO.output(self.stepper2_pins[1], step[1])
                         GPIO.output(self.stepper2_pins[2], step[2])
                         GPIO.output(self.stepper2_pins[3], step[3])
-                        #print(self.stepper1_pins[pin], self.stepper2_pins[pin], step[pin])
+                       
                     time.sleep(self.step_delay)
                     step_count += 1
-                    # degree_count = int(round((step_count / (self.steps_per_rev * self.gear_ratio)) * 90))
-                    # if (upward and CAM_YPOS - degree_count <= self.cam_min) or (not upward and CAM_YPOS + degree_count >= self.cam_max):
-                    #     self.stop()
-                    #     break
+                   
             else:
                 self.stop()
                 break
@@ -183,7 +180,7 @@ class ActuatorController:
     def extend(self, degrees=90):
         #Raise tool holder (both steppers move upward).
         #global CAM_YPOS
-        #if CAM_YPOS == self.cam_max: return 0
+       
         self.stop_flag = False
         return self.move(degrees, upward=True)
 
