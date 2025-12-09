@@ -357,12 +357,15 @@ class ToolInterface:
         self.tool_number = tk.Entry(self.window)
         self.flute_number = tk.Entry(self.window)
         self.layer_number = tk.Entry(self.window)
+        self.height = tk.Entry(self.window)
         self.color = tk.StringVar(value="Select Color")  # default display text
         self.color_dropdown = ttk.Combobox(self.window, textvariable=self.color, values=["Silver", "Black", "Gold"],state="readonly" )
         
-        self.tool_number.grid(row=0, column=1, padx=5, pady=5)
-        self.flute_number.grid(row=1, column=1, padx=5, pady=5)
-        self.layer_number.grid(row=2, column=1, padx=5, pady=5)
+        self.tool_number.grid(row=0, column=1, padx=5, pady=5, columnspan=2)
+        self.flute_number.grid(row=1, column=1, padx=5, pady=5, columnspan=2)
+        self.layer_number.grid(row=2, column=1, padx=5, pady=5, columnspan=2)
+        self.height.grid(row=3, column=1, padx=5, pady=5, columnspan=2)
+
         self.color_dropdown.grid(row=3, column=1, padx=5, pady=5)
 
         # status display
@@ -434,6 +437,7 @@ class ToolInterface:
             tool_number = self.tool_number.get().strip()
             flute_number = self.flute_number.get().strip()
             layer_number = self.layer_number.get().strip()
+            height = self.height.get().strip()
             color = self.color.get().strip()
 
             if not tool_number or not flute_number or not layer_number:
