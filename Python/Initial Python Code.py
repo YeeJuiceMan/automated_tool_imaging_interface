@@ -332,11 +332,11 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
             #actuator.retract(400)
             for position in range(int(flute_number)*3):
                 stepper.rotate_degrees(angle_increment, False)
-            
+        cam_height -= actuator.retract(cam_height)
+        print(cam_height)    
         return all_file_paths
         
-        cam_height -= actuator.retract(cam_height)
-        print(cam_height)
+        
     except Exception as e:
         print(f"Error during capture sequence: {e}")
         raise e
