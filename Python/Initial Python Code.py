@@ -125,8 +125,8 @@ class ActuatorController:
         self.gear_ratio = gear_ratio
         self.step_delay = 0.001
         self.stop_flag = False
-        self.cam_min = cam_min
-        self.cam_max = cam_max
+        #self.cam_min = cam_min
+        #self.cam_max = cam_max
         self.current_step = 0
 
     def move(self, degrees, upward=True):
