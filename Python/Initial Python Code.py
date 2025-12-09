@@ -529,7 +529,7 @@ class ToolInterface:
         try:
             if not self.has_aligned_up:
                 messagebox.showwarning("Warning", "Please click 'Align Up' before starting imaging.")
-            return
+                return
             
             # validate inputs
             tool_number = self.tool_number.get().strip()
