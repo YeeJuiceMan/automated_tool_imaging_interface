@@ -459,7 +459,7 @@ class ToolInterface:
     def align_down(self):
         global CAM_YPOS
         if not self.align_bool and CAM_YPOS <= self.cam_max and not self.bottom:
-            self.top = True
+            self.top = False
         # Start retracting in background thread
             self.move_threadd = CustomThread(
                 target=self.actuator.extend,
