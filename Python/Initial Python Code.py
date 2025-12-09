@@ -117,7 +117,7 @@ class StepperController:
                 time.sleep(self.step_delay)
 
 class ActuatorController:
-    def __init__(self, stepper1_pins, stepper2_pins, step_sequence, steps_per_rev, gear_ratio):
+    def __init__(self, stepper1_pins, stepper2_pins, step_sequence, steps_per_rev, gear_ratio, cam_min, cam_max):
         # Each actuator now has two vertical stepper motors
         self.stepper1_pins = stepper1_pins
         self.stepper2_pins = stepper2_pins
@@ -337,7 +337,7 @@ class CustomThread(Thread):
         return self._return
 
 class ToolInterface:
-    def __init__(self):
+    def __init__(self, cam_min, cam_max):
         self.window = tk.Tk()
         self.window.title("Tool Imaging Station")
         self.align_bool = False
