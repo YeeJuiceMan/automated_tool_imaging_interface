@@ -254,7 +254,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
     #run  the automated capture sequence to get 20 images per tool
     try:
         # calculate angle increment for 20 positions by 360 degrees / 20 positions = 18 degrees per step
-        angle_increment = 100/int(flute_number)
+        angle_increment = 100/(int(flute_number)*3)
 
 
         all_file_paths = []
@@ -275,7 +275,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
         time.sleep(0.5)
 
         # go through 20 positions
-        for position in range(int(flute_number)):
+        for position in range(int(flute_number)*3):
             current_angle = position * angle_increment
             #print(f"\nCapturing at position {position+1}/20 ({current_angle}°)")
 
@@ -302,7 +302,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
 
         #print(f"\nCapture sequence completed. Total images: {len(all_file_paths)}")
         #actuator.retract(400)
-        for position in range(int(flute_number)):
+        for position in range(int(flute_number)*3):
          stepper.rotate_degrees(angle_increment, False)
         return all_file_paths
 
