@@ -336,6 +336,9 @@ class ToolInterface:
         self.move_threadd = None
         self.up_stat = True
 
+        global CAM_YPOS
+        global CAM_BIT_TOP_POS
+
         # set up GPIO
         if RUNNING_ON_RASPBERRY_PI:
             setup_gpio()
