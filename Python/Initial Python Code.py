@@ -67,8 +67,8 @@ else:
 os.makedirs(BASE_DIR, exist_ok=True)
 
 # Current position of camera (top is 0)
-global CAM_YPOS = 0
-global CAM_BIT_TOP_POS = 0
+CAM_YPOS = 0
+CAM_BIT_TOP_POS = 0
 
 if not RUNNING_ON_RASPBERRY_PI:
     class DummyGPIO:
@@ -427,6 +427,7 @@ class ToolInterface:
             # Second press → stop
             self.actuator.stop_flag = True    # tell actuator to stop
             result = self.move_threadu.join()
+            print(result)
             CAM_YPOS -= result
             print("Returned:", result, ", ", CAM_YPOS)            
             self.align_bool = False
@@ -450,6 +451,7 @@ class ToolInterface:
             # Second press → stop
             self.actuator.stop_flag = True    # tell actuator to stop
             result = self.move_threadd.join()
+            print(result)
             CAM_YPOS += result
             print("Returned:", result, ", ", CAM_YPOS)   
             self.align_bool = False
