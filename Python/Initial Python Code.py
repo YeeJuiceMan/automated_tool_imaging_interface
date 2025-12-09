@@ -68,6 +68,7 @@ else:
 os.makedirs(BASE_DIR, exist_ok=True)
 
 # Current position of camera (top is 0)
+global CAM_YPOS 
 CAM_YPOS = 0
 CAM_BIT_TOP_POS = 0
 CAM_MIN = 0
@@ -178,6 +179,7 @@ class ActuatorController:
         #global CAM_YPOS
         #if CAM_YPOS == self.cam_max: return 0
         self.stop_flag = False
+        CAM_YPOS += degrees
         return self.move(degrees, upward=True)
 
     def retract(self, degrees=90):
@@ -185,6 +187,7 @@ class ActuatorController:
         #global CAM_YPOS
         #if CAM_YPOS == self.cam_min: return 0
         self.stop_flag = False
+        CAM_YPOS -= degrees
         return self.move(degrees, upward=False)
 
     def stop(self):
@@ -242,13 +245,12 @@ class MicroscopeManager:
             if camera_num < len(self.cameras):
                 cameras_to_use = [(camera_num, self.cameras[camera_num])]
             else:
-                print(f"Camera {camera_num} not initialized!")
                 return []
         else:
             cameras_to_use = list(enumerate(self.cameras))
         for i, camera in cameras_to_use:
             # Take multiple frames to ensure good quality
-            for _ in range(5):
+            for _ in range(10):
                 ret, frame = camera.read()
                # time.sleep(0.1)
 
@@ -281,17 +283,8 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
         # calculate angle increment for 20 positions by 360 degrees / 20 positions = 18 degrees per step
         angle_increment = 100/(int(flute_number)*3)
 
-
         all_file_paths = []
-        #actuator.extend(80)
-        #actuator.extend(400)
-        '''for _ in range (50):
-            actuator.retract(400)
-            time.sleep(3)
-            actuator.extend(400)
-            time.sleep(3)'''
-        #actuator.retract(200)
-        #actuator.retract(800)
+        
         time.sleep(0.5)
         actuator.extend(920)
         # initial positioning by starting with tool fully down
@@ -339,7 +332,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
                 stepper.rotate_degrees(angle_increment, False)
             
         return all_file_paths
-
+        actuator.retract(CAM_YPOS)
     except Exception as e:
         print(f"Error during capture sequence: {e}")
         raise e
@@ -486,6 +479,7 @@ class ToolInterface:
         # Start retracting in background thread
             self.move_threadd = CustomThread(
                 target=self.actuator.extend,
+                
                 args=(2000,),
                 #daemon=True
             )
