@@ -284,7 +284,9 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
         all_file_paths = []
         
         time.sleep(0.5)
-        CAM_YPOS += actuator.extend(920)
+        cam_height = 0
+        cam_height += actuator.extend(920)
+        print(cam_height)
        
         # initial positioning by starting with tool fully down
         image_paths = cameras.capture_images(tool_number, flute_number, layer_number, 0, 0, 0)
@@ -293,7 +295,8 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
         time.sleep(0.5)
         # go through 20 positions
         for x in range(5):
-            CAM_YPOS -= actuator.retract(40)
+            cam_height -= actuator.retract(40)
+            print(cam_height)
             for position in range(int(flute_number)*3):
                 current_angle = position * angle_increment 
                 current_height = x
@@ -331,7 +334,9 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
                 stepper.rotate_degrees(angle_increment, False)
             
         return all_file_paths
-        CAM_YPOS -= actuator.retract(CAM_YPOS)
+        
+        cam_height -= actuator.retract(cam_height)
+        print(cam_height)
     except Exception as e:
         print(f"Error during capture sequence: {e}")
         raise e
