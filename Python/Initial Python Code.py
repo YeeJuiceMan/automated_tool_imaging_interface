@@ -68,8 +68,7 @@ else:
 os.makedirs(BASE_DIR, exist_ok=True)
 
 # Current position of camera (top is 0)
-global CAM_YPOS 
-CAM_YPOS = 0
+CAM_YPOS  = 0
 CAM_BIT_TOP_POS = 0
 CAM_MIN = 0
 CAM_MAX = 940
@@ -179,7 +178,6 @@ class ActuatorController:
         #global CAM_YPOS
         #if CAM_YPOS == self.cam_max: return 0
         self.stop_flag = False
-        CAM_YPOS += degrees
         return self.move(degrees, upward=True)
 
     def retract(self, degrees=90):
@@ -187,7 +185,6 @@ class ActuatorController:
         #global CAM_YPOS
         #if CAM_YPOS == self.cam_min: return 0
         self.stop_flag = False
-        CAM_YPOS -= degrees
         return self.move(degrees, upward=False)
 
     def stop(self):
@@ -281,12 +278,14 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
     #run  the automated capture sequence to get 20 images per tool
     try:
         # calculate angle increment for 20 positions by 360 degrees / 20 positions = 18 degrees per step
+        global CAM_YPOS
         angle_increment = 100/(int(flute_number)*3)
 
         all_file_paths = []
         
         time.sleep(0.5)
-        actuator.extend(920)
+        CAM_YPOS += actuator.extend(920)
+       
         # initial positioning by starting with tool fully down
         image_paths = cameras.capture_images(tool_number, flute_number, layer_number, 0, 0, 0)
         all_file_paths.extend(image_paths)
@@ -294,7 +293,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
         time.sleep(0.5)
         # go through 20 positions
         for x in range(5):
-            actuator.retract(40)
+            CAM_YPOS -= actuator.retract(40)
             for position in range(int(flute_number)*3):
                 current_angle = position * angle_increment 
                 current_height = x
@@ -332,7 +331,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
                 stepper.rotate_degrees(angle_increment, False)
             
         return all_file_paths
-        actuator.retract(CAM_YPOS)
+        CAM_YPOS -= actuator.retract(CAM_YPOS)
     except Exception as e:
         print(f"Error during capture sequence: {e}")
         raise e
