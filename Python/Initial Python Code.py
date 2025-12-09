@@ -462,7 +462,7 @@ class ToolInterface:
     def bit_top(self): # will save in folder in the future
         global CAM_BIT_TOP_POS, CAM_YPOS
         CAM_BIT_TOP_POS = CAM_YPOS
-        self.update_status("Top Position Saved:", CAM_BIT_TOP_POS)
+        self.update_status("Top Position Saved:"+CAM_BIT_TOP_POS)
 
     def update_status(self, message):
         # update status display
