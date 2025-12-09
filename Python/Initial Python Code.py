@@ -6,7 +6,7 @@ from tkinter import ttk
 import os
 import cv2
 import time
-import datetime
+from datetime import datetime
 import RPi.GPIO as GPIO
 from threading import Thread
 import threading
