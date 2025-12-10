@@ -16,8 +16,7 @@ import threading
 # Hardware control flag (False for Windows) so set true on raspberry pi
 RUNNING_ON_RASPBERRY_PI = True
 AUTO_START = False
-ALIGN_UP = False
-# Where the images are stored, changes depending on where you are storing it (this is an example)
+
 
 # Hardware Configuration
 
@@ -58,6 +57,8 @@ GEAR_RATIO = 20/12.7
 NUM_CAMERAS = 3
 # USB
 CAMERA_INDICES = [0, 2, 4]
+
+# Where the images are stored
 if not RUNNING_ON_RASPBERRY_PI:
     BASE_DIR = r"C:\Users\csmid\OneDrive - The Pennsylvania State University\Images"
 else:
@@ -92,7 +93,7 @@ def setup_gpio():
                 VERT_STP2_BLACK, VERT_STP2_GREEN, VERT_STP2_RED, VERT_STP2_BLUE, 
                 STP_IN1, STP_IN2, STP_IN3, STP_IN4], GPIO.OUT)
         
-    # Initialize all pins to LOW bc HIGH disables stepper and acuator (active LOW)
+    # Initialize all pins to LOW bc HIGH disables steppers (active LOW)
     GPIO.output([VERT_STP1_BLACK, VERT_STP1_GREEN, VERT_STP1_RED, VERT_STP1_BLUE, 
                 VERT_STP2_BLACK, VERT_STP2_GREEN, VERT_STP2_RED, VERT_STP2_BLUE, 
                   STP_IN1, STP_IN2, STP_IN3, STP_IN4], GPIO.LOW)
@@ -213,7 +214,7 @@ class MicroscopeManager:
             print("WARNING: Not all cameras were initialized!")
 
     def capture_images(self, tool_number, flute_number, layer_number, height, position, camera_num=None):
-        """Capture images from all cameras"""
+        """Capture images from defined cameras"""
         timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
         date_folder = datetime.now().strftime('%Y-%m-%d')
         tool_folder = f"T{tool_number}_FL{flute_number}_OD{layer_number}"
@@ -233,14 +234,13 @@ class MicroscopeManager:
         else:
             cameras_to_use = list(enumerate(self.cameras))
         for i, camera in cameras_to_use:
-            # Take multiple frames to ensure good quality
+            # Take multiple frames to ensure quality
             for _ in range(10):
                 ret, frame = camera.read()
 
             if ret:
                
                 # "T# FL# OD L# M/AP"
-                
                 file_name = f"{datetime.now().strftime('%Y-%m-%d')}_L{height}_{positions[i]}_{int(position)}deg.jpg"
                 file_path = os.path.join(folder_path, file_name)
 
@@ -268,6 +268,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
         all_file_paths = []
         
         time.sleep(0.5)
+        #tracks height of camera needed to revert to
         cam_height = 0
         cam_height += actuator.extend(920)
        
@@ -276,7 +277,6 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
         all_file_paths.extend(image_paths)
         # wait for stability 
         time.sleep(0.5)
-        # go through 
         
         for x in range(int(layer_number)):
             current_angle = 0
@@ -286,7 +286,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
                 current_angle += 180/int(flute_number)
                 current_height = x
                
-                # capture images from all cameras
+                # capture images from side cameras
             
                 image_paths = cameras.capture_images(tool_number, flute_number, layer_number, current_height, current_angle, 1)
                 all_file_paths.extend(image_paths)
@@ -297,7 +297,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
                 stepper.rotate_degrees(angle_increment)
                 #wait
                 time.sleep(0.3)
-            #reverse    
+            #reverse rotation   
             for position in range(int(flute_number)):
                 stepper.rotate_degrees(angle_increment, False)
         cam_height -= actuator.retract(cam_height)   
