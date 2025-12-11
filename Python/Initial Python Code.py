@@ -117,6 +117,12 @@ class StepperController:
                     GPIO.output(self.step_pins[pin], step[pin])
                 time.sleep(self.step_delay)
 
+    def stop(self):
+        #Disable all coils.
+        for pin in self.step_pins:
+            GPIO.output(pin, GPIO.LOW)
+        return 0
+
 class ActuatorController:
     def __init__(self, stepper1_pins, stepper2_pins, step_sequence, steps_per_rev, gear_ratio):#, cam_min, cam_max):
         # Each actuator now has two vertical stepper motors
@@ -300,6 +306,7 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
             for position in range(int(flute_number)):
                 stepper.rotate_degrees(angle_increment, False)
         time.sleep(.5)
+        stepper.stop()
         cam_height -= actuator.retract(cam_height)   
         return all_file_paths
         
