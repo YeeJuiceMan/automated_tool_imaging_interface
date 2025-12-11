@@ -283,9 +283,9 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
         # wait for stability 
         time.sleep(0.5)
         
-        for x in range(5):
+        for x in range(int(layer_number)):
             current_angle = 0
-            cam_height -= actuator.retract(40)
+            cam_height -= actuator.retract(200/int(layer_number))
           
             for position in range(int(flute_number)):
                 current_angle += 180/int(flute_number)
