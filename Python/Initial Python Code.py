@@ -10,7 +10,6 @@ from datetime import datetime
 import RPi.GPIO as GPIO
 from threading import Thread
 import threading
-import math
 
 
 
@@ -290,8 +289,8 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
             cam_height -= actuator.retract(200/int(layer_number))
           
             for position in range(int(flute_number)):
-                current_angle1 += 180/int(math.ceil(flute_number/2))
-                current_angle2 += 180/int(math.ceil(flute_number/2))
+                current_angle1 += 180/int(flute_number)
+                current_angle2 += 180/int(flute_number)
                 current_height = x
                
                 # capture images from side cameras
