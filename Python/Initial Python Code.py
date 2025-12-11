@@ -300,11 +300,14 @@ def automated_capture_sequence(tool_number, flute_number, layer_number, cameras,
 
                 # rotate to next position             
                 stepper.rotate_degrees(angle_increment)
+                stepper.stop()
+
                 #wait
                 time.sleep(0.3)
             #reverse rotation   
             for position in range(int(flute_number)):
                 stepper.rotate_degrees(angle_increment, False)
+                stepper.stop()
         time.sleep(.5)
         stepper.stop()
         cam_height -= actuator.retract(cam_height)   
